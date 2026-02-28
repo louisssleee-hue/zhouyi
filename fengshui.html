@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>风水堪舆 · 周易玄学</title>
+  <meta name="description" content="风水堪舆学，八卦九宫方位，八宅风水法则，九星飞伏">
+  <meta property="og:title" content="风水堪舆 · 周易玄学">
+  <meta property="og:description" content="八卦九宫方位，八宅风水法则，命宅匹配计算，九宫飞星流年分析">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="initFengshui()">
+<div class="page-wrap">
+
+<!-- Navigation -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">周易</a>
+    <a href="index.html" class="nav-link"><span class="icon">🏠</span>首页</a>
+    <a href="bazi.html" class="nav-link"><span class="icon">🀄</span>八字</a>
+    <a href="fengshui.html" class="nav-link active"><span class="icon">🧭</span>风水</a>
+    <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
+    <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
+    <a href="qimen.html" class="nav-link"><span class="icon">☯</span>奇门遁甲</a>
+  </div>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="page-hero-bg" src="https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=1400&q=80" alt="" loading="lazy">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <h2>风水堪舆</h2>
+    <p>八宅风水 · 九宫飞星 · 形煞化解</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <p class="section-eyebrow">地理之学</p>
+    <h2 class="section-title">风水堪舆</h2>
+    <div class="gold-divider"></div>
+    <p class="section-desc">风水，藏风得水，察气乘龙，以自然环境与人居格局为载体，调和天地人三才之气。</p>
+  </div>
+
+  <!-- 八卦九宫 -->
+  <h3 style="text-align:center;color:var(--gold);margin-bottom:1.5rem;font-size:1.1rem">✦ 洛书九宫 · 八卦方位 ✦</h3>
+  <div class="bagua-visual">
+    <div class="bagua-cell">
+      <div class="bagua-gua">☴</div>
+      <div class="bagua-name">巽卦</div>
+      <div class="bagua-dir">东南 · 四绿木</div>
+      <div class="bagua-ele element-木">木</div>
+      <div class="bagua-meaning">文昌财帛，主财富积累</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☲</div>
+      <div class="bagua-name">离卦</div>
+      <div class="bagua-dir">正南 · 九紫火</div>
+      <div class="bagua-ele element-火">火</div>
+      <div class="bagua-meaning">名誉声望，现九运当旺</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☷</div>
+      <div class="bagua-name">坤卦</div>
+      <div class="bagua-dir">西南 · 二黑土</div>
+      <div class="bagua-ele element-土">土</div>
+      <div class="bagua-meaning">家宅母亲，主健康</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☳</div>
+      <div class="bagua-name">震卦</div>
+      <div class="bagua-dir">正东 · 三碧木</div>
+      <div class="bagua-ele element-木">木</div>
+      <div class="bagua-meaning">长男事业，主奋进</div>
+    </div>
+    <div class="bagua-cell center">
+      <div class="bagua-gua">☯</div>
+      <div class="bagua-name">中宫</div>
+      <div class="bagua-dir">中央 · 五黄土</div>
+      <div class="bagua-ele element-土">土</div>
+      <div class="bagua-meaning">五黄大煞，宜静不宜动</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☱</div>
+      <div class="bagua-name">兑卦</div>
+      <div class="bagua-dir">正西 · 七赤金</div>
+      <div class="bagua-ele element-金">金</div>
+      <div class="bagua-meaning">少女口才，主桃花</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☶</div>
+      <div class="bagua-name">艮卦</div>
+      <div class="bagua-dir">东北 · 八白土</div>
+      <div class="bagua-ele element-土">土</div>
+      <div class="bagua-meaning">少男财运，八白大吉</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☵</div>
+      <div class="bagua-name">坎卦</div>
+      <div class="bagua-dir">正北 · 一白水</div>
+      <div class="bagua-ele element-水">水</div>
+      <div class="bagua-meaning">中男智慧，主文昌</div>
+    </div>
+    <div class="bagua-cell">
+      <div class="bagua-gua">☰</div>
+      <div class="bagua-name">乾卦</div>
+      <div class="bagua-dir">西北 · 六白金</div>
+      <div class="bagua-ele element-金">金</div>
+      <div class="bagua-meaning">父亲事业，主贵气</div>
+    </div>
+  </div>
+
+  <!-- 命宅匹配计算器 -->
+  <div class="fs-calculator">
+    <h3 style="text-align:center;color:var(--gold);margin:2rem 0 1.5rem;font-size:1.1rem">✦ 命宅匹配计算器 ✦</h3>
+    <div class="fs-form">
+      <div class="form-group">
+        <label>出生年份</label>
+        <input type="number" id="fs-birth-year" placeholder="如：1990" min="1900" max="2100" value="1990">
+      </div>
+      <div class="form-group">
+        <label>性别</label>
+        <select id="fs-gender">
+          <option value="m">男</option>
+          <option value="f">女</option>
+        </select>
+      </div>
+      <button class="btn-calc" onclick="calcMingZhai()">✦ 命卦推算 ✦</button>
+    </div>
+    <div class="fs-result" id="mingzhai-result" style="display:none;margin-top:1.5rem"></div>
+  </div>
+
+  <!-- 九宫飞星流年计算 -->
+  <div class="fs-calculator">
+    <h3 style="text-align:center;color:var(--gold);margin:2rem 0 1.5rem;font-size:1.1rem">✦ 九宫飞星流年计算 ✦</h3>
+    <div class="fs-form">
+      <div class="form-group">
+        <label>流年</label>
+        <input type="number" id="fs-year" placeholder="如：2026" min="1900" max="2100">
+      </div>
+      <button class="btn-calc" onclick="calcLiunian()">✦ 飞星排盘 ✦</button>
+    </div>
+    <p id="feixingYear" style="text-align:center;margin:1rem 0;color:var(--gold)"></p>
+    <div class="feixing-container">
+      <div id="feixingGrid"></div>
+      <div id="feixingDetail" class="feixing-detail"></div>
+    </div>
+  </div>
+
+  <!-- 知识 tabs -->
+  <div style="margin-top:3rem">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(this,'tab-jiuxing')">九星详解</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-zzfs')">八宅风水</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-xingsha')">形煞化解</button>
+    </div>
+
+    <div id="tab-jiuxing" class="tab-content active">
+      <table class="jiuxing-table">
+        <tr><th>星曜</th><th>五行</th><th>性质</th><th>吉凶</th><th>宜忌</th></tr>
+        <tr><td>一白贪狼</td><td>水</td><td>文昌</td><td style="color:#52b788">吉</td><td>主智慧、桃花，适合文职</td></tr>
+        <tr><td>二黑巨门</td><td>土</td><td>病符</td><td style="color:#e74c3c">凶</td><td>主疾病、阴滞，需化解</td></tr>
+        <tr><td>三碧禄存</td><td>木</td><td>是非</td><td style="color:#e74c3c">凶</td><td>主口舌、争斗</td></tr>
+        <tr><td>四绿文昌</td><td>木</td><td>文昌</td><td style="color:#52b788">吉</td><td>主学业、功名</td></tr>
+        <tr><td>五黄廉贞</td><td>土</td><td>大煞</td><td style="color:#e74c3c">最凶</td><td>最忌动土，宜静不宜动</td></tr>
+        <tr><td>六白武曲</td><td>金</td><td>偏财</td><td style="color:#52b788">吉</td><td>主偏财、权威</td></tr>
+        <tr><td>七赤破军</td><td>金</td><td>盗贼</td><td style="color:#e74c3c">凶</td><td>主破耗、防盗</td></tr>
+        <tr><td>八白左辅</td><td>土</td><td>财星</td><td style="color:#52b788">大吉</td><td>主正财、置业</td></tr>
+        <tr><td>九紫右弼</td><td>火</td><td>喜庆</td><td style="color:#52b788">吉</td><td>主喜庆、爱情</td></tr>
+      </table>
+    </div>
+
+    <div id="tab-zzfs" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">东四宅</div>
+          <div class="card-body">震宅（坐东朝西）、巽宅（坐东南朝西北）、坎宅（坐北朝南）、离宅（坐南朝北）。东四命宜居东四宅。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">西四宅</div>
+          <div class="card-body">乾宅（坐西北朝东南）、坤宅（坐西南朝东北）、兑宅（坐西朝东）、艮宅（坐东北朝西南）。西四命宜居西四宅。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">四吉位</div>
+          <div class="card-body">生气（贪狼木）— 延年（武曲金）— 天医（巨门土）— 伏位（辅弼木）。吉位宜设大门、床位、书桌。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">四凶位</div>
+          <div class="card-body">绝命（破军金）— 五鬼（廉贞火）— 六煞（文曲水）— 祸害（禄存土）。凶位宜设厕所、厨房化解。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-xingsha" class="tab-content">
+      <div class="xingsha-grid">
+        <div class="xingsha-card"><div class="xingsha-name">天斩煞</div><div class="xingsha-desc">两楼相夹如刀劈，主血光之灾。宜摆放大铜钱或山海镇化解。</div></div>
+        <div class="xingsha-card"><div class="xingsha-name">路冲煞</div><div class="xingsha-desc">大门正对直路，气直冲入。宜设玄关或种植化解。</div></div>
+        <div class="xingsha-card"><div class="xingsha-name">反弓煞</div><div class="xingsha-desc">道路或河流呈弓形外抱，主破财。宜摆放铜葫芦化解。</div></div>
+        <div class="xingsha-card"><div class="xingsha-name">穿堂煞</div><div class="xingsha-desc">大门与后门相对，气穿堂而过不聚气。宜设屏风阻挡。</div></div>
+        <div class="xingsha-card"><div class="xingsha-name">角冲煞</div><div class="xingsha-desc">建筑墙角正对大门。宜挂凸镜或山海镇化解。</div></div>
+        <div class="xingsha-card"><div class="xingsha-name">声煞</div><div class="xingsha-desc">噪音不断干扰。宜挂葫芦或播放音乐化解。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-title">周易玄学</div>
+  <p>仅供参考 · 理性对待</p>
+</footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/fengshui-calc.js"></script>
+</body>
+</html>

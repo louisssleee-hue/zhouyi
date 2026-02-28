@@ -1,0 +1,683 @@
+/**
+ * style.css — 周易玄学网站全局样式
+ * 设计风格：黑金中式美学
+ */
+
+/* ── CSS 变量 ── */
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --crimson: #8b1a1a;
+  --crimson-light: #c0392b;
+  --ink: #0a0a0f;
+  --ink-2: #12121a;
+  --ink-3: #1a1a26;
+  --parchment: #f5edd6;
+  --parchment-dark: #e8d9b5;
+  --text-main: #f0e6cc;
+  --text-dim: #a89070;
+  --jade: #2d6a4f;
+  --jade-light: #52b788;
+  /* 动画变量 */
+  --anim-duration: 0.6s;
+  --anim-delay: 0.1s;
+}
+  --spacing-xs: 0.4rem;
+  --spacing-sm: 0.8rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 3rem;
+  --spacing-xl: 5rem;
+  --radius: 4px;
+  --radius-lg: 8px;
+  --border-gold: 1px solid rgba(201,168,76,0.2);
+}
+
+/* ── 重置 ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--ink);
+  color: var(--text-main);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── 背景纹理 ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139,26,26,0.08) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L55 20L55 40L30 55L5 40L5 20Z' fill='none' stroke='%23c9a84c' stroke-width='0.3' stroke-opacity='0.07'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.page-wrap { position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 2rem;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7,7,13,0.75);
+  z-index: 1;
+}
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, var(--ink) 80%);
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-bagua {
+  width: 340px; height: 340px;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  animation: rotateSlow 80s linear infinite;
+}
+@keyframes rotateSlow { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.hero-content { position: relative; z-index: 2; }
+.hero-tag {
+  font-size: 0.8rem; letter-spacing: 0.4em;
+  color: var(--gold); text-transform: uppercase;
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 0.3em 1.2em; margin-bottom: 1.5rem;
+  display: inline-block;
+}
+.hero-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 1; color: var(--gold);
+  text-shadow: 0 0 60px rgba(201,168,76,0.4), 0 2px 4px rgba(0,0,0,0.8);
+  margin-bottom: 0.5rem;
+  animation: fadeUp 1s ease both;
+}
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: var(--text-dim); letter-spacing: 0.3em;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 1s 0.2s ease both;
+}
+.hero-trigrams {
+  display: flex; gap: 2rem; justify-content: center;
+  margin-bottom: 3rem;
+  animation: fadeUp 1s 0.4s ease both;
+}
+.trigram {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; transition: transform 0.3s;
+}
+.trigram:hover { transform: scale(1.1); }
+.trigram-line {
+  width: 40px; height: 4px; background: var(--gold);
+  border-radius: 2px; position: relative;
+}
+.trigram-line.broken::after {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 10px; height: 100%; background: var(--ink);
+}
+.trigram span { font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; margin-top: 4px; }
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+.nav-strip {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,15,0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav-logo {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.3rem; color: var(--gold);
+  padding: 0.8rem 1.5rem; white-space: nowrap;
+  border-right: 1px solid rgba(201,168,76,0.2);
+}
+.nav-link {
+  padding: 1rem 1.2rem; color: var(--text-dim);
+  text-decoration: none; font-size: 0.9rem;
+  letter-spacing: 0.1em; transition: color 0.2s, background 0.2s;
+  white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;
+}
+.nav-link .icon { font-size: 1rem; }
+.nav-link:hover, .nav-link.active {
+  color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+
+/* ══════════════════════════════════════
+   SECTION COMMON
+══════════════════════════════════════ */
+section {
+  max-width: 1200px; margin: 0 auto;
+  padding: var(--spacing-xl) 2rem;
+}
+
+/* Page Hero */
+.page-hero {
+  position: relative;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.page-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.page-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7,7,13,0.75);
+  z-index: 1;
+}
+.page-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.page-hero-content h2 {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2.5rem;
+  color: var(--gold-light);
+  margin-bottom: 0.5rem;
+}
+.page-hero-content p {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.5em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--gold-light);
+  text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  margin-bottom: 0.8rem;
+}
+.section-desc {
+  color: var(--text-dim); font-size: 0.95rem;
+  line-height: 1.8; max-width: 600px; margin: 0 auto;
+}
+.gold-divider {
+  width: 120px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.5rem auto;
+}
+.section-sep {
+  border: none;
+  border-top: 1px solid rgba(201,168,76,0.12);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════
+   CARDS
+══════════════════════════════════════ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  background: var(--ink-2);
+  border: var(--border-gold);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  position: relative; overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(201,168,76,0.3), 0 12px 40px rgba(0,0,0,0.4);
+}
+.card:hover::before { opacity: 1; }
+.card-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+.card-title { font-size: 1.1rem; color: var(--gold); margin-bottom: 0.5rem; }
+.card-body { font-size: 0.85rem; color: var(--text-dim); line-height: 1.8; flex: 1; }
+.card-link {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--gold);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.card:hover .card-link {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+.tab-buttons {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;
+}
+.tab-btn {
+  background: var(--ink-2);
+  border: var(--border-gold);
+  color: var(--text-dim);
+  padding: 0.5rem 1.2rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.85rem; cursor: pointer;
+  border-radius: var(--radius); transition: all 0.2s;
+}
+.tab-btn.active, .tab-btn:hover {
+  background: rgba(201,168,76,0.1);
+  color: var(--gold);
+  border-color: rgba(201,168,76,0.4);
+}
+.tab-content { display: none; animation: fadeUp 0.3s ease; }
+.tab-content.active { display: block; }
+
+/* ══════════════════════════════════════
+   BAZI CALCULATOR
+══════════════════════════════════════ */
+.bazi-section {
+  background: var(--ink-2); border-radius: var(--radius-lg);
+  padding: 3rem; border: var(--border-gold);
+}
+.bazi-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem; margin-bottom: 2rem;
+}
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group label { font-size: 0.8rem; color: var(--gold); letter-spacing: 0.1em; }
+.form-group select,
+.form-group input {
+  background: var(--ink-3);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: var(--radius);
+  color: var(--text-main);
+  padding: 0.6rem 0.8rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.9rem; outline: none;
+  transition: border-color 0.2s;
+}
+.form-group select:focus,
+.form-group input:focus { border-color: var(--gold); }
+
+.btn-calc {
+  background: linear-gradient(135deg, var(--crimson), var(--crimson-light));
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  padding: 0.8rem 2.5rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1rem; letter-spacing: 0.15em;
+  cursor: pointer; border-radius: var(--radius);
+  transition: all 0.3s;
+  display: block; margin: 0 auto; text-decoration: none; display: inline-block;
+}
+.btn-calc:hover {
+  background: linear-gradient(135deg, #a02020, #d44);
+  box-shadow: 0 0 20px rgba(192,57,43,0.4);
+}
+
+/* 四柱 */
+.pillars-grid {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; margin: 2rem 0;
+}
+.pillar {
+  background: var(--ink-3); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: var(--radius); text-align: center; padding: 1.5rem 1rem;
+}
+.pillar-label { font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 1rem; }
+.pillar-stem  { font-family: 'Ma Shan Zheng', cursive; font-size: 2.5rem; margin-bottom: 0.3rem; }
+.pillar-branch { font-family: 'Ma Shan Zheng', cursive; font-size: 2.5rem; margin-bottom: 0.5rem; }
+.pillar-element {
+  font-size: 0.75rem; padding: 0.2em 0.6em;
+  border-radius: 2px; display: inline-block;
+}
+.element-木 { background: rgba(82,183,136,0.2); color: var(--jade-light); border: 1px solid rgba(82,183,136,0.3); }
+.element-火 { background: rgba(192,57,43,0.2); color: #e74c3c; border: 1px solid rgba(192,57,43,0.3); }
+.element-土 { background: rgba(201,168,76,0.2); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.element-金 { background: rgba(200,200,200,0.2); color: #ccc; border: 1px solid rgba(200,200,200,0.3); }
+.element-水 { background: rgba(52,152,219,0.2); color: #5dade2; border: 1px solid rgba(52,152,219,0.3); }
+
+.bazi-result { display: none; animation: fadeUp 0.5s ease; }
+.result-section { margin: 1.5rem 0; }
+.result-title {
+  font-size: 1rem; color: var(--gold); margin-bottom: 1rem;
+  padding-bottom: 0.5rem; border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+.info-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.8rem;
+}
+.info-item {
+  background: var(--ink-3); border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius); padding: 0.8rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.info-key { font-size: 0.72rem; color: var(--text-dim); }
+.info-val { font-size: 1rem; color: var(--text-main); font-weight: 500; }
+
+/* ══════════════════════════════════════
+   FENGSHUI / BAGUA
+══════════════════════════════════════ */
+.bagua-visual {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1rem; max-width: 600px; margin: 0 auto 3rem;
+}
+.bagua-cell {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 1.2rem 0.8rem;
+  text-align: center; transition: all 0.3s; cursor: pointer;
+}
+.bagua-cell:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+.bagua-cell.center {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(139,26,26,0.1));
+  border-color: rgba(201,168,76,0.4);
+}
+.bagua-gua { font-family: 'Ma Shan Zheng', cursive; font-size: 2rem; margin-bottom: 0.3rem; }
+.bagua-name { font-size: 0.85rem; color: var(--gold); margin-bottom: 0.2rem; }
+.bagua-dir { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+.bagua-ele { font-size: 0.7rem; }
+.bagua-meaning { font-size: 0.7rem; color: var(--text-dim); line-height: 1.5; margin-top: 0.4rem; }
+
+/* 风水计算器 */
+.fs-calculator { margin: 2rem auto; max-width: 800px; }
+.fs-form { display: flex; gap: 1rem; justify-content: center; align-items: flex-end; flex-wrap: wrap; }
+.fs-form .form-group { margin-bottom: 0; }
+.fs-result { background: var(--ink-2); border: var(--border-gold); border-radius: var(--radius); padding: 1.5rem; }
+.fs-result-section { text-align: center; margin-bottom: 1.5rem; }
+.fs-result-section h4 { font-size: 1.3rem; color: var(--gold); margin-bottom: 0.3rem; }
+.fs-minggua-type { font-size: 0.9rem; color: var(--text-dim); }
+.fs-positions { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+.fs-lucky h5, .fs-unlucky h5 { font-size: 1rem; margin-bottom: 0.8rem; }
+.fs-lucky h5 { color: #52b788; }
+.fs-unlucky h5 { color: #e74c3c; }
+.fs-positions ul { list-style: none; padding: 0; }
+.fs-positions li { margin-bottom: 0.6rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(201,168,76,0.1); }
+.fs-positions li strong { display: block; color: var(--gold); font-size: 0.9rem; margin-bottom: 0.2rem; }
+.fs-positions li span { font-size: 0.75rem; color: var(--text-dim); }
+.fs-match { background: rgba(201,168,76,0.1); padding: 1rem; border-radius: var(--radius); text-align: center; }
+.fs-match p { font-size: 0.85rem; color: var(--text-dim); margin: 0; }
+
+/* 九宫飞星 */
+.feixing-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.feixing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.feixing-cell {
+  background: var(--ink-2); border: 2px solid var(--border-color);
+  border-radius: var(--radius); padding: 0.8rem 0.5rem; text-align: center;
+  transition: all 0.3s ease;
+}
+.feixing-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.feixing-jixiong { border-color: rgba(82,183,136,0.5); }
+.feixing-xiong { border-color: rgba(231,76,60,0.5); }
+.feixing-current { box-shadow: 0 0 8px var(--gold); }
+.feixing-pos { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.2rem; }
+.feixing-num { font-size: 1.5rem; font-weight: 700; font-family: 'Ma Shan Zheng', cursive; }
+.feixing-name { font-size: 0.7rem; color: var(--text-dim); margin: 0.2rem 0; }
+.feixing-ele { font-size: 0.65rem; color: var(--text-dim); }
+.feixing-detail {
+  background: var(--ink-2); border: var(--border-gold); border-radius: var(--radius);
+  padding: 1.2rem; min-height: 200px;
+}
+.feixing-info h4 { color: var(--gold); font-size: 1.1rem; margin-bottom: 0.8rem; }
+.feixing-info p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+
+@media (max-width: 768px) {
+  /* 移动端修复 */
+  .feixing-container { grid-template-columns: 1fr; }
+  .fs-positions { grid-template-columns: 1fr; }
+
+  /* 四柱格 2x2 布局 */
+  .pillars-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* 卡片单列 */
+  .card-grid { grid-template-columns: 1fr; }
+
+  /* 表格横向滚动 */
+  .jiuxing-table { display: block; overflow-x: auto; white-space: nowrap; }
+
+  /* 表格单元格 */
+  .jiuxing-table th, .jiuxing-table td { min-width: 80px; }
+
+  /* 英雄标题自适应 */
+  .hero-title { font-size: clamp(1.8rem, 8vw, 3rem) !important; }
+  .hero-sub { font-size: clamp(0.8rem, 3vw, 1rem) !important; }
+
+  /* 面相、手相网格单列 */
+  .face-zones, .palm-lines { grid-template-columns: 1fr; }
+
+  /* 九宫飞星 */
+  .qimen-grid, .bagua-visual { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* 九星表格 */
+.jiuxing-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.jiuxing-table th {
+  background: rgba(201,168,76,0.15); color: var(--gold);
+  padding: 0.7rem; text-align: center;
+  border: 1px solid rgba(201,168,76,0.2); font-size: 0.8rem;
+}
+.jiuxing-table td {
+  padding: 0.6rem; text-align: center;
+  border: 1px solid rgba(201,168,76,0.1); color: var(--text-dim);
+}
+.jiuxing-table tr:hover td { background: rgba(201,168,76,0.05); color: var(--text-main); }
+
+/* 形煞 */
+.xingsha-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.xingsha-card {
+  background: var(--ink-2); border: 1px solid rgba(192,57,43,0.25);
+  border-top: 2px solid var(--crimson-light);
+  border-radius: var(--radius); padding: 1.2rem;
+}
+.xingsha-name { font-size: 1rem; color: #e74c3c; margin-bottom: 0.4rem; }
+.xingsha-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; }
+
+/* 神煞 */
+.shensha-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; }
+.shensha-item {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 1rem;
+}
+.shensha-name { font-size: 0.95rem; color: var(--gold); margin-bottom: 0.3rem; }
+.shensha-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; }
+.badge { display: inline-block; font-size: 0.65rem; padding: 0.15em 0.5em; border-radius: 2px; margin-left: 0.4rem; }
+.badge-ji  { background: rgba(192,57,43,0.3); color: #e74c3c; }
+.badge-ji2 { background: rgba(201,168,76,0.2); color: var(--gold); }
+
+/* ══════════════════════════════════════
+   MIANXIANG / FACE
+══════════════════════════════════════ */
+.face-zones {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+}
+.face-zone {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 1rem; transition: all 0.3s;
+}
+.face-zone:hover { border-color: rgba(201,168,76,0.4); }
+.face-zone-title { font-size: 0.9rem; color: var(--gold); margin-bottom: 0.4rem; }
+.face-zone-body  { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+
+/* ══════════════════════════════════════
+   SHOUXIANG / PALM
+══════════════════════════════════════ */
+.palm-lines { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.palm-line-card {
+  background: var(--ink-2); border: var(--border-gold);
+  border-left: 3px solid var(--gold); border-radius: var(--radius);
+  padding: 1.2rem; transition: all 0.3s;
+}
+.palm-line-card:hover { background: rgba(201,168,76,0.05); }
+.palm-line-title { font-size: 1rem; color: var(--gold); margin-bottom: 0.5rem; }
+.palm-line-body  { font-size: 0.8rem; color: var(--text-dim); line-height: 1.7; }
+
+/* ══════════════════════════════════════
+   QIMEN
+══════════════════════════════════════ */
+.qimen-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; max-width: 500px; margin: 0 auto 3rem;
+  background: rgba(201,168,76,0.2);
+  padding: 3px; border: 1px solid rgba(201,168,76,0.3);
+}
+.qimen-cell {
+  background: var(--ink-2); padding: 1rem; text-align: center;
+  min-height: 100px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.3rem;
+}
+.qimen-cell.center { background: rgba(201,168,76,0.08); }
+.qimen-star  { font-size: 1.5rem; color: var(--gold); font-family: 'Ma Shan Zheng', cursive; }
+.qimen-label { font-size: 0.7rem; color: var(--text-dim); }
+.qimen-num   { font-size: 0.9rem; color: var(--gold-light); }
+
+/* 节气 */
+.jieqi-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.6rem; }
+.jieqi-item {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 0.8rem; text-align: center;
+}
+.jieqi-name   { font-size: 0.9rem; color: var(--gold); margin-bottom: 0.2rem; }
+.jieqi-date   { font-size: 0.7rem; color: var(--text-dim); }
+.jieqi-season { font-size: 0.65rem; color: var(--text-dim); }
+
+/* ══════════════════════════════════════
+   PAGE LOAD ANIMATIONS
+══════════════════════════════════════ */
+/* 初始状态：隐藏并向下偏移 */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--anim-duration) ease-out, transform var(--anim-duration) ease-out;
+}
+
+/* 可见状态 */
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 卡片交错动画 */
+.card-grid .card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--anim-duration) ease-out, transform var(--anim-duration) ease-out, box-shadow 0.3s, border-color 0.3s;
+}
+
+.card-grid .card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section 动画 */
+section > *:not(.page-hero):not(.hero) {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity var(--anim-duration) ease-out, transform var(--anim-duration) ease-out;
+}
+
+section > *:not(.page-hero):not(.hero).visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  border-top: 1px solid rgba(201,168,76,0.15);
+  padding: 3rem 2rem; text-align: center;
+  color: var(--text-dim); font-size: 0.8rem;
+}
+.footer-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem; color: var(--gold); margin-bottom: 0.5rem;
+}
+.scroll-top {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 99;
+  background: rgba(201,168,76,0.2); border: 1px solid rgba(201,168,76,0.4);
+  color: var(--gold); width: 44px; height: 44px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.2rem; transition: all 0.2s; text-decoration: none;
+}
+.scroll-top:hover { background: rgba(201,168,76,0.3); }
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rotateSlow {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+  .bazi-section { padding: 1.5rem; }
+  .bagua-visual { max-width: 100%; }
+  .qimen-grid   { max-width: 100%; }
+  .hero-trigrams { gap: 1rem; }
+  section { padding: var(--spacing-lg) 1rem; }
+}
+
+@media (max-width: 480px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .face-zones { grid-template-columns: 1fr; }
+  .hero-title { font-size: 3rem; }
+  .jieqi-list { grid-template-columns: repeat(3, 1fr); }
+}

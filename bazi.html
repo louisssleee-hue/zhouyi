@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>八字命理 · 周易玄学</title>
+  <meta name="description" content="八字命理分析，四柱排盘，精确节气计算，大运流年分析">
+  <meta property="og:title" content="八字命理 · 周易玄学">
+  <meta property="og:description" content="八字命理分析四柱排盘，精确节气计算，大运流年分析，神煞纳音全面解读">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- Navigation -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">周易</a>
+    <a href="index.html" class="nav-link"><span class="icon">🏠</span>首页</a>
+    <a href="bazi.html" class="nav-link active"><span class="icon">🀄</span>八字</a>
+    <a href="fengshui.html" class="nav-link"><span class="icon">🧭</span>风水</a>
+    <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
+    <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
+    <a href="qimen.html" class="nav-link"><span class="icon">☯</span>奇门遁甲</a>
+  </div>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="page-hero-bg" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1400&q=80" alt="" loading="lazy">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <h2>八字命理</h2>
+    <p>四柱排盘 · 精确节气计算 · 大运流年分析</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <p class="section-eyebrow">命理之学</p>
+    <h2 class="section-title">八字命理</h2>
+    <div class="gold-divider"></div>
+    <p class="section-desc">八字，又称四柱，以出生年月日时推算命局，揭示人生格局与运势走向。</p>
+  </div>
+
+  <!-- 八字计算器 -->
+  <div class="bazi-section">
+    <h3 style="color:var(--gold);font-size:1.2rem;margin-bottom:1.5rem;text-align:center">✦ 四柱排盘 · 输入生辰八字 ✦</h3>
+    <div class="bazi-form">
+      <div class="form-group">
+        <label>出生年份</label>
+        <input type="number" id="birthYear" placeholder="如：1990" min="1900" max="2100" value="1990">
+      </div>
+      <div class="form-group">
+        <label>出生月份</label>
+        <select id="birthMonth">
+          <option value="1">一月</option><option value="2">二月</option><option value="3">三月</option>
+          <option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
+          <option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
+          <option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>出生日期</label>
+        <select id="birthDay" style="width:100%">
+          <script>for(let i=1;i<=31;i++) document.write(`<option value="${i}">${i}日</option>`);</script>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>出生时辰</label>
+        <select id="birthHour">
+          <option value="0">子时 (23:00-01:00)</option><option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option><option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option><option value="5">巳时 (09:00-11:00)</option>
+          <option value="6">午时 (11:00-13:00)</option><option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option><option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option><option value="11">亥时 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>性别</label>
+        <select id="gender"><option value="m">男</option><option value="f">女</option></select>
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcBazi()">✦ 排盘推算 ✦</button>
+
+    <div class="bazi-result" id="baziResult">
+      <div class="pillars-grid" id="pillarsGrid"></div>
+      <div class="result-section">
+        <p class="result-title">📋 基本信息</p>
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+      <div class="result-section">
+        <p class="result-title">☯ 五行分布</p>
+        <div id="wuxingBar" style="display:flex;gap:0.5rem;flex-wrap:wrap;"></div>
+      </div>
+      <div class="result-section">
+        <p class="result-title">⚡ 大运</p>
+        <div class="pillars-grid" id="daYunGrid" style="margin-top:1rem"></div>
+      </div>
+      <div class="result-section">
+        <p class="result-title">🔮 神煞</p>
+        <div class="shensha-list" id="shenshaGrid" style="grid-template-columns: repeat(auto-fill, minmax(200px,1fr));"></div>
+      </div>
+      <div class="result-section">
+        <p class="result-title">📊 命局分析</p>
+        <div id="mingJu" style="font-size:0.9rem;color:var(--text-dim);line-height:2;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 知识 tabs -->
+  <div style="margin-top:3rem">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(this,'tab-tiandi')">天干地支</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-shishen')">十神</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-shierzhang')">十二长生</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-shensha')">神煞</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-jieqi')">二十四节气</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-sanyuan')">三元九运</button>
+    </div>
+
+    <div id="tab-tiandi" class="tab-content active">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">🌞</div>
+          <div class="card-title">十天干</div>
+          <div class="card-body">
+            <span style="color:var(--jade-light)">甲木 乙木</span>｜<span style="color:#e74c3c">丙火 丁火</span>｜<span style="color:var(--gold)">戊土 己土</span>｜<span style="color:#ccc">庚金 辛金</span>｜<span style="color:#5dade2">壬水 癸水</span><br><br>
+            甲：阳木，参天大树，主仁，领导；乙：阴木，花草藤蔓，主柔韧；丙：阳火，太阳烈焰，主礼；丁：阴火，灯烛之火，主智慧；戊：阳土，大山厚土，主稳重；己：阴土，田园之土，主包容；庚：阳金，刀剑斧钺，主义；辛：阴金，珠宝首饰，主精细；壬：阳水，江河大海，主智；癸：阴水，雨露甘泉，主灵动。
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌙</div>
+          <div class="card-title">十二地支</div>
+          <div class="card-body">
+            子(鼠)丑(牛)寅(虎)卯(兔)辰(龙)巳(蛇)午(马)未(羊)申(猴)酉(鸡)戌(狗)亥(猪)<br><br>
+            子：阳水；丑：阴土；寅：阳木；卯：阴木；辰：阳土；巳：阴火；午：阳火；未：阴土；申：阳金；酉：阴金；戌：阳土；亥：阴水。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-shishen" class="tab-content">
+      <div class="card-grid">
+        <div class="card"><div class="card-title">比肩</div><div class="card-body">与日主同五行同阴阳，主独立、竞争、固执，代表兄弟朋友。</div></div>
+        <div class="card"><div class="card-title">劫财</div><div class="card-body">与日主同五行异阴阳，主争夺财帛，代表异性兄弟姐妹。</div></div>
+        <div class="card"><div class="card-title">食神</div><div class="card-body">日主生出，同阴阳，主福禄、才艺、口才，称"福星"。</div></div>
+        <div class="card"><div class="card-title">伤官</div><div class="card-body">日主生出，异阴阳，主才华横溢，但伤官见官，逢凶。</div></div>
+        <div class="card"><div class="card-title">偏财</div><div class="card-body">日主克，同阴阳，主横财、意外财，男命代表父亲。</div></div>
+        <div class="card"><div class="card-title">正财</div><div class="card-body">日主克，异阴阳，主正当财富，稳定收入，男命代表正妻。</div></div>
+        <div class="card"><div class="card-title">七杀</div><div class="card-body">克日主，同阴阳，又称偏官，主压力、权威、武职。</div></div>
+        <div class="card"><div class="card-title">正官</div><div class="card-body">克日主，异阴阳，主名誉、官职、规矩，女命代表正夫。</div></div>
+        <div class="card"><div class="card-title">偏印</div><div class="card-body">生日主，同阴阳，又称枭神，主学术、宗教、孤独。</div></div>
+        <div class="card"><div class="card-title">正印</div><div class="card-body">生日主，异阴阳，主母亲、学历、贵人，印星旺者聪明。</div></div>
+      </div>
+    </div>
+
+    <div id="tab-shierzhang" class="tab-content">
+      <div class="info-grid">
+        <div class="info-item"><div class="info-key">长生</div><div class="info-val" style="color:var(--jade-light)">萌生之象</div></div>
+        <div class="info-item"><div class="info-key">沐浴</div><div class="info-val" style="color:#5dade2">洗浴之象</div></div>
+        <div class="info-item"><div class="info-key">冠带</div><div class="info-val" style="color:var(--gold)">成长之象</div></div>
+        <div class="info-item"><div class="info-key">临官</div><div class="info-val" style="color:var(--gold">壮旺之象</div></div>
+        <div class="info-item"><div class="info-key">帝旺</div><div class="info-val" style="color:#e74c3c">极旺之象</div></div>
+        <div class="info-item"><div class="info-key">衰</div><div class="info-val" style="color:var(--text-dim)">衰退之象</div></div>
+        <div class="info-item"><div class="info-key">病</div><div class="info-val" style="color:var(--text-dim)">病弱之象</div></div>
+        <div class="info-item"><div class="info-key">死</div><div class="info-val" style="color:var(--text-dim)">沉寂之象</div></div>
+        <div class="info-item"><div class="info-key">墓</div><div class="info-val" style="color:var(--text-dim)">入库之象</div></div>
+        <div class="info-item"><div class="info-key">绝</div><div class="info-val" style="color:var(--text-dim)">断绝之象</div></div>
+        <div class="info-item"><div class="info-key">胎</div><div class="info-val" style="color:var(--jade-light)">受孕之象</div></div>
+        <div class="info-item"><div class="info-key">养</div><div class="info-val" style="color:var(--jade-light)">蕴育之象</div></div>
+      </div>
+    </div>
+
+    <div id="tab-shensha" class="tab-content">
+      <div class="shensha-list">
+        <div class="shensha-item"><div class="shensha-name">天乙贵人 <span class="badge badge-ji2">吉</span></div><div class="shensha-desc">最吉之神煞，逢凶化吉，遇难呈祥，贵人相助。</div></div>
+        <div class="shensha-item"><div class="shensha-name">文昌星 <span class="badge badge-ji2">吉</span></div><div class="shensha-desc">主聪明才智，文章学业，学习能力强。</div></div>
+        <div class="shensha-item"><div class="shensha-name">驿马星 <span class="badge badge-ji2">动</span></div><div class="shensha-desc">主奔波迁移，多出行、迁居。</div></div>
+        <div class="shensha-item"><div class="shensha-name">桃花星 <span class="badge badge-ji2">情</span></div><div class="shensha-desc">主桃花运，人缘，魅力十足。</div></div>
+        <div class="shensha-item"><div class="shensha-name">华盖星 <span class="badge badge-ji2">艺</span></div><div class="shensha-desc">主孤独与才艺，适合艺术、宗教等领域。</div></div>
+        <div class="shensha-item"><div class="shensha-name">羊刃 <span class="badge badge-ji">凶</span></div><div class="shensha-desc">极旺之神，主刚烈、冲动。</div></div>
+      </div>
+    </div>
+
+    <div id="tab-jieqi" class="tab-content">
+      <div class="jieqi-list">
+        <div class="jieqi-item"><div class="jieqi-name">立春</div><div class="jieqi-date">2月3-5日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">雨水</div><div class="jieqi-date">2月18-20日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">惊蛰</div><div class="jieqi-date">3月5-7日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">春分</div><div class="jieqi-date">3月20-22日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">清明</div><div class="jieqi-date">4月4-6日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">谷雨</div><div class="jieqi-date">4月19-21日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">立夏</div><div class="jieqi-date">5月5-7日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">小满</div><div class="jieqi-date">5月20-22日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">芒种</div><div class="jieqi-date">6月5-7日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">夏至</div><div class="jieqi-date">6月21-22日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">小暑</div><div class="jieqi-date">7月6-8日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">大暑</div><div class="jieqi-date">7月22-24日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">立秋</div><div class="jieqi-date">8月7-9日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">处暑</div><div class="jieqi-date">8月22-24日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">白露</div><div class="jieqi-date">9月7-9日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">秋分</div><div class="jieqi-date">9月22-24日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">寒露</div><div class="jieqi-date">10月7-9日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">霜降</div><div class="jieqi-date">10月23-24日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">立冬</div><div class="jieqi-date">11月7-8日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">小雪</div><div class="jieqi-date">11月22-23日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">大雪</div><div class="jieqi-date">12月6-8日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">冬至</div><div class="jieqi-date">12月21-23日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">小寒</div><div class="jieqi-date">1月5-7日</div></div>
+        <div class="jieqi-item"><div class="jieqi-name">大寒</div><div class="jieqi-date">1月20-21日</div></div>
+      </div>
+    </div>
+
+    <div id="tab-sanyuan" class="tab-content">
+      <div class="card-grid">
+        <div class="card"><div class="card-title">上元 (一运~三运)</div><div class="card-body">一白水星运：1864-1883年<br>二黑土星运：1884-1903年<br>三碧木星运：1904-1923年</div></div>
+        <div class="card"><div class="card-title">中元 (四运~六运)</div><div class="card-body">四绿木星运：1924-1943年<br>五黄土星运：1944-1963年<br>六白金星运：1964-1983年</div></div>
+        <div class="card"><div class="card-title">下元 (七运~九运)</div><div class="card-body">七赤金星运：1984-2003年<br>八白土星运：2004-2023年<br>九紫火星运：2024-2043年</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-title">周易玄学</div>
+  <p>仅供参考 · 理性对待</p>
+</footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/bazi.js"></script>
+</body>
+</html>

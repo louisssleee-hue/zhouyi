@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>奇门遁甲 · 周易玄学</title>
+  <meta name="description" content="奇门遁甲，时空决策术，九宫八卦排盘">
+  <meta property="og:title" content="奇门遁甲 · 周易玄学">
+  <meta property="og:description" content="最高层次时空决策术，九星八门布局排盘，趋吉避凶把握天时地利">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- Navigation -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">周易</a>
+    <a href="index.html" class="nav-link"><span class="icon">🏠</span>首页</a>
+    <a href="bazi.html" class="nav-link"><span class="icon">🀄</span>八字</a>
+    <a href="fengshui.html" class="nav-link"><span class="icon">🧭</span>风水</a>
+    <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
+    <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
+    <a href="qimen.html" class="nav-link active"><span class="icon">☯</span>奇门遁甲</a>
+  </div>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="page-hero-bg" src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?w=1400&q=80" alt="" loading="lazy">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <h2>奇门遁甲</h2>
+    <p>九星八门 · 布局排盘 · 趋吉避凶</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <p class="section-eyebrow">最高层次</p>
+    <h2 class="section-title">奇门遁甲</h2>
+    <div class="gold-divider"></div>
+    <p class="section-desc">奇门遁甲，"最高层次的时空决策术"，以洛书九宫结合八卦九星八门，洞悉天时地利人和。</p>
+  </div>
+
+  <!-- 奇门九宫 -->
+  <h3 style="text-align:center;color:var(--gold);margin-bottom:1.5rem;font-size:1.1rem">✦ 奇门九宫格式 ✦</h3>
+  <div class="qimen-grid">
+    <div class="qimen-cell">
+      <div class="qimen-star">☴</div>
+      <div class="qimen-label">巽四宫</div>
+      <div class="qimen-num">杜门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☲</div>
+      <div class="qimen-label">离九宫</div>
+      <div class="qimen-num">景门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☷</div>
+      <div class="qimen-label">坤二宫</div>
+      <div class="qimen-num">死门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☳</div>
+      <div class="qimen-label">震三宫</div>
+      <div class="qimen-num">伤门</div>
+    </div>
+    <div class="qimen-cell center">
+      <div class="qimen-star">中</div>
+      <div class="qimen-label">中五宫</div>
+      <div class="qimen-num">值符</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☱</div>
+      <div class="qimen-label">兑七宫</div>
+      <div class="qimen-num">惊门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☶</div>
+      <div class="qimen-label">艮八宫</div>
+      <div class="qimen-num">生门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☵</div>
+      <div class="qimen-label">坎一宫</div>
+      <div class="qimen-num">休门</div>
+    </div>
+    <div class="qimen-cell">
+      <div class="qimen-star">☰</div>
+      <div class="qimen-label">乾六宫</div>
+      <div class="qimen-num">开门</div>
+    </div>
+  </div>
+
+  <!-- 知识 tabs -->
+  <div style="margin-top:3rem">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(this,'tab-jiuxing')">九星</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-bamen')">八门</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-qishen')">八神</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-yingyong')">应用</button>
+    </div>
+
+    <div id="tab-jiuxing" class="tab-content active">
+      <table class="jiuxing-table">
+        <tr><th>星名</th><th>五行</th><th>性质</th><th>吉凶</th><th>释义</th></tr>
+        <tr><td>天任</td><td>土</td><td>值符</td><td style="color:#52b788">大吉</td><td>主承载、稳重、贵人扶持</td></tr>
+        <tr><td>天冲</td><td>木</td><td>驿马</td><td style="color:#e74c3c">带凶</td><td>主冲刺、行动、但易冲动</td></tr>
+        <tr><td>天辅</td><td>木</td><td>文昌</td><td style="color:#52b788">大吉</td><td>主文化、教育、贵人、化解</td></tr>
+        <tr><td>天英</td><td>火</td><td>中天</td><td style="color:#e74c3c">带凶</td><td>主文明、礼仪，但易有是非</td></tr>
+        <tr><td>天芮</td><td>土</td><td>病符</td><td style="color:#e74c3c">大凶</td><td>主疾病、问题、隐患，需化解</td></tr>
+        <tr><td>天柱</td><td>金</td><td>破军</td><td style="color:#e74c3c">凶</td><td>主破坏、颠覆、震惊事件</td></tr>
+        <tr><td>天心</td><td>金</td><td>武曲</td><td style="color:#52b788">大吉</td><td>主谋略、医疗、权力、领导</td></tr>
+        <tr><td>天蓬</td><td>水</td><td>盗贼</td><td style="color:#e74c3c">凶</td><td>主冒险、投机、盗抢、风险</td></tr>
+        <tr><td>天禽</td><td>土</td><td>中宫</td><td style="color:#52b788">大吉</td><td>主中正、吉利、承载全局</td></tr>
+      </table>
+    </div>
+
+    <div id="tab-bamen" class="tab-content">
+      <table class="jiuxing-table">
+        <tr><th>门名</th><th>属性</th><th>吉凶</th><th>释义</th><th>宜忌</th></tr>
+        <tr><td>开门</td><td>金</td><td style="color:#52b788">大吉</td><td>主开创、事业、官运</td><td>宜开业、求职、谈判</td></tr>
+        <tr><td>休门</td><td>水</td><td style="color:#52b788">大吉</td><td>主休息、养生、人际关系</td><td>宜修养、调和、谈判</td></tr>
+        <tr><td>生门</td><td>土</td><td style="color:#52b788">大吉</td><td>主生财、兴业、房产</td><td>宜求财、投资、置产</td></tr>
+        <tr><td>伤门</td><td>木</td><td style="color:#e74c3c">凶</td><td>主伤害、竞争、变动</td><td>宜诉讼、讨债、竞争</td></tr>
+        <tr><td>杜门</td><td>木</td><td style="color:#a89070">平</td><td>主保密、阻碍、技术</td><td>宜隐匿、防守、研发</td></tr>
+        <tr><td>景门</td><td>火</td><td style="color:#a89070">小吉</td><td>主信息、文化、表达</td><td>宜宣传、谈判、考试</td></tr>
+        <tr><td>死门</td><td>土</td><td style="color:#e74c3c">大凶</td><td>主终结、死亡、锁定</td><td>仅宜吊丧、收债、诉讼</td></tr>
+        <tr><td>惊门</td><td>金</td><td style="color:#e74c3c">凶</td><td>主惊恐、口舌、是非</td><td>主口舌、纠纷、辩论</td></tr>
+      </table>
+    </div>
+
+    <div id="tab-qishen" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">值符</div>
+          <div class="card-body">最高吉神，主核心、领导、核心人物。代表最重要因素。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">腾蛇</div>
+          <div class="card-body">虚诈之神，主变化、疑虑、缠绕、阴险。需辨其属性。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">太阴</div>
+          <div class="card-body">阴祐之神，主隐蔽、策划、暗中相助。利于密谋、合作。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">六合</div>
+          <div class="card-body">和合之神，主合作、婚姻、中介。利于谈判、签约。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">白虎</div>
+          <div class="card-body">凶煞之神，主压力、权威、阻碍。代表困难与挑战。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">玄武</div>
+          <div class="card-body">盗匪之神，主偷盗、欺骗、隐性风险。需防小人与背叛。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">九地</div>
+          <div class="card-body">厚土之神，主稳定、长久、储备。利于长期规划。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">九天</div>
+          <div class="card-body">高远之神，主发展、扩张、远行。利于主动出击。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-yingyong" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">阳遁与阴遁</div>
+          <div class="card-body">冬至到夏至用阳遁，夏至到冬至用阴遁。阳遁顺飞九宫，阴遁逆飞九宫。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">定局起局</div>
+          <div class="card-body">根据年月日时四柱，定值符星与值使门，确定九宫排布格局。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">吉凶方位</div>
+          <div class="card-body">开门、休门、生门为三吉门；值符星所在宫为最利方位。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">趋吉避凶</div>
+          <div class="card-body">选择吉门吉星所在方位行动，避开凶门凶星所在方位。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-title">周易玄学</div>
+  <p>仅供参考 · 理性对待</p>
+</footer>
+
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
