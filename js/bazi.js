@@ -1470,63 +1470,103 @@ function renderBazi(result) {
     `).join('');
   }
 
-  // ==================== 大运表格 ====================
+  // ==================== 大运流年可视化 ====================
   const daYunGrid = document.getElementById('daYunGrid');
   if (daYunGrid) {
     const currentYear = new Date().getFullYear();
     const birthYear = parseInt(document.getElementById('birthYear')?.value || 2000);
     const currentAge = currentYear - birthYear;
 
-    // 起运信息
-    let yunInfo = `<div class="yun-info">起运：${info.startAge}岁 ${daYunDetail.direction || '顺行'}</div>`;
+    // 计算小运
+    const xiaoyun = calcXiaoyun(birthYear, month, day, hour);
 
-    // 大运表格
-    let dyHtml = `<table class="dayun-table"><thead><tr>`;
-    daYun.forEach((dy, i) => {
-      const isCurrent = currentAge >= dy.age && currentAge <= dy.ageEnd;
-      dyHtml += `<th class="${isCurrent ? 'current' : ''}">${dy.age}岁</th>`;
+    // 小运 HTML
+    let xiaoyunHtml = `
+      <div class="xiaoyun-wrap">
+        <div class="xiaoyun-title">☯ 小运（1-8岁）</div>
+        <div class="xiaoyun-row">
+    `;
+    xiaoyun.forEach(xy => {
+      const stemColor = ELEMENT_COLOR[xy.stemEle];
+      const branchColor = ELEMENT_COLOR[xy.branchEle];
+      xiaoyunHtml += `
+        <div class="xiaoyun-item">
+          <div class="xy-age">${xy.age}岁</div>
+          <div class="xy-stem" style="color:${stemColor}">${xy.stem}</div>
+          <div class="xy-branch" style="color:${branchColor}">${xy.branch}</div>
+        </div>
+      `;
     });
-    dyHtml += `</tr></thead><tbody><tr>`;
+    xiaoyunHtml += `</div></div>`;
 
+    // 起运信息
+    let yunInfo = `<div class="yun-info">起运：${info.startAge}岁 · ${daYunDetail.direction || '顺行'} · 大运十年换运</div>`;
+
+    // 大运时间轴
+    let dyHtml = `<div class="daYun-timeline"><div class="daYun-row">`;
     daYun.forEach((dy, i) => {
       const isCurrent = currentAge >= dy.age && currentAge <= dy.ageEnd;
       const stemColor = ELEMENT_COLOR[dy.stemEle];
       const branchColor = ELEMENT_COLOR[dy.branchEle];
       const stemShishen = getTenGod(dayStem, dy.stem);
-      const branchShishen = getTenGod(dayStem, dy.stem);
-      dyHtml += `<td class="${isCurrent ? 'current' : ''}">
-        <div class="dy-stem" style="color:${stemColor}">${dy.stem}</div>
-        <div class="dy-shishen">${stemShishen}</div>
-        <div class="dy-branch" style="color:${branchColor}">${dy.branch}</div>
-        <div class="dy-shishen">${branchShishen}</div>
-      </td>`;
+      const branchShishen = getTenGod(dayStem, dy.branch);
+      const nayin = getNayin(dy.stem, dy.branch);
+      const impact = getDayunImpact(dayStem, dy.stem, dy.branch, pillars[2].stemEle);
+
+      dyHtml += `
+        <div class="daYun-item ${isCurrent ? 'current' : ''}">
+          <div class="daYun-year">${dy.year}-${dy.year + 9}</div>
+          <div class="daYun-stem" style="color:${stemColor}">${dy.stem}</div>
+          <div class="daYun-branch" style="color:${branchColor}">${dy.branch}</div>
+          <div class="daYun-shishen">${stemShishen}</div>
+          <div class="daYun-shishen">${branchShishen}</div>
+          <div class="daYun-nayin">${nayin}</div>
+          <div class="daYun-impact ${impact.type === '生扶' ? 'sheng' : impact.type === '克泄' ? 'ke' : 'zhong'}">${impact.type}</div>
+        </div>
+      `;
     });
-    dyHtml += `</tr></tbody></table>`;
+    dyHtml += `</div></div>`;
 
     // 流年（当前大运的流年）
     const currentDaYunIndex = daYun.findIndex(dy => currentAge >= dy.age && currentAge <= dy.ageEnd);
     let liunianHtml = '';
     if (currentDaYunIndex >= 0) {
       const startYear = daYun[currentDaYunIndex].year;
-      liunianHtml = `<div class="liunian-section"><h4>流年</h4><div class="liunian-row">`;
+      liunianHtml = `
+        <div class="liunian-detail">
+          <div class="liunian-title">⚡ 流年 · ${daYun[currentDaYunIndex].year}-${daYun[currentDaYunIndex].year + 9}年</div>
+          <div class="liunian-grid">
+      `;
+
       for (let i = 0; i < 10; i++) {
         const year = startYear + i;
         const age = info.startAge + (daYunDetail.direction === '顺行' ? i : -i);
-        const lnStemIdx = STEMS.indexOf(dayStem) + (daYun[currentDaYunIndex].stemIdx || 0) + i;
-        const lnStem = STEMS[(lnStemIdx % 10 + 10) % 10];
+        const lnStemIdx = (STEMS.indexOf(dayStem) + (daYun[currentDaYunIndex].stemIdx || 0) + i) % 10;
+        const lnStem = STEMS[lnStemIdx];
         const lnBranchIdx = (BRANCHES.indexOf(daYun[currentDaYunIndex].branch) + i) % 12;
         const lnBranch = BRANCHES[lnBranchIdx];
         const isCurrentYear = year === currentYear;
-        liunianHtml += `<div class="liunian-item ${isCurrentYear ? 'current' : ''}">
-          <div class="ln-year">${year}</div>
-          <div class="ln-stem" style="color:${ELEMENT_COLOR[STEM_ELEMENTS[STEMS.indexOf(lnStem)]]}">${lnStem}</div>
-          <div class="ln-branch" style="color:${ELEMENT_COLOR[BRANCH_ELEMENTS[BRANCHES.indexOf(lnBranch)]]}">${lnBranch}</div>
-        </div>`;
+
+        const stemColor = ELEMENT_COLOR[STEM_ELEMENTS[lnStemIdx]];
+        const taishai = getTaishai(year);
+
+        // 检查与日支的关系
+        const dayBranch = pillars[2].branch;
+        const relation = checkRelationship(dayBranch, lnBranch);
+
+        liunianHtml += `
+          <div class="liunian-cell ${isCurrentYear ? 'current' : ''}">
+            <div class="ln-stem-branch" style="color:${stemColor}">${lnStem}${lnBranch}</div>
+            <div class="ln-year-age">${year}年</div>
+            ${relation ? `<div class="ln-relation ${relation}">${relation}</div>` : ''}
+            <div class="ln-taishai">太岁${taishai}</div>
+          </div>
+        `;
       }
       liunianHtml += `</div></div>`;
     }
 
-    daYunGrid.innerHTML = yunInfo + dyHtml + liunianHtml;
+    daYunGrid.innerHTML = xiaoyunHtml + yunInfo + dyHtml + liunianHtml;
   }
 
   // ==================== 神煞（保留原格式）====================
@@ -1806,6 +1846,153 @@ function analyzeFortune(pillars, elemCount, info, shensha) {
   html += '</div>';
 
   return html;
+}
+
+
+// ==================== 大运流年辅助函数 ====================
+
+/**
+ * 计算小运（1-8岁）
+ * @param {number} year 出生年
+ * @param {number} month 出生月
+ * @param {number} day 出生日
+ * @param {number} hourBranchIdx 时辰索引
+ * @returns {Array} 小运数组
+ */
+function calcXiaoyun(year, month, day, hourBranchIdx) {
+  const dayPillar = getDayStemBranch(year, month, day);
+  const dayStem = STEMS[dayPillar.stemIdx];
+  const xiaoyun = [];
+
+  // 小运从时柱逆行
+  let stemIdx = dayPillar.stemIdx;
+  let branchIdx = hourBranchIdx;
+
+  for (let i = 0; i < 8; i++) {
+    // 逆行：干支都递减
+    stemIdx = (stemIdx - 1 + 10) % 10;
+    branchIdx = (branchIdx - 1 + 12) % 12;
+
+    xiaoyun.push({
+      age: i + 1,
+      stem: STEMS[stemIdx],
+      branch: BRANCHES[branchIdx],
+      stemIdx,
+      branchIdx,
+      stemEle: STEM_ELEMENTS[stemIdx],
+      branchEle: BRANCH_ELEMENTS[branchIdx]
+    });
+  }
+
+  return xiaoyun;
+}
+
+/**
+ * 判断大运对日主的生克关系
+ * @param {string} dayStem 日主天干
+ * @param {string} yunStem 大运天干
+ * @param {string} yunBranch 大运地支
+ * @param {string} dayStemEle 日主五行
+ * @returns {Object} {type: '生扶'|'克泄'|'中性', desc: 描述}
+ */
+function getDayunImpact(dayStem, yunStem, yunBranch, dayStemEle) {
+  const stemEle = STEM_ELEMENTS[STEMS.indexOf(yunStem)];
+  const branchEle = BRANCH_ELEMENTS[BRANCHES.indexOf(yunBranch)];
+
+  // 五行生克关系
+  const sheng = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
+  const ke = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
+
+  const stemShengDay = sheng[stemEle] === dayStemEle;
+  const stemKeDay = ke[stemEle] === dayStemEle;
+  const branchShengDay = sheng[branchEle] === dayStemEle;
+  const branchKeDay = ke[branchEle] === dayStemEle;
+
+  let type, desc;
+
+  if (stemShengDay || branchShengDay) {
+    type = '生扶';
+    desc = '泄秀';
+  } else if (stemKeDay || branchKeDay) {
+    type = '克泄';
+    desc = '耗力';
+  } else {
+    type = '中性';
+    desc = '无直接生克';
+  }
+
+  // 检查地支与日支的关系
+  return { type, desc };
+}
+
+/**
+ * 获取太岁方位（年支所在方位）
+ * @param {number} year 年份
+ * @returns {string} 太岁方位
+ */
+function getTaishai(year) {
+  const branchIdx = ((year - 4) % 12 + 12) % 12;
+  const branch = BRANCHES[branchIdx];
+  const dirs = {
+    '子': '北', '丑': '东北', '寅': '东北', '卯': '东',
+    '辰': '东南', '巳': '东南', '午': '南', '未': '西南',
+    '申': '西南', '酉': '西', '戌': '西北', '亥': '西北'
+  };
+  return dirs[branch] || '';
+}
+
+/**
+ * 检查地支之间的刑冲合害关系
+ * @param {string} branch1 第一个地支
+ * @param {string} branch2 第二个地支
+ * @returns {string} 关系名称（空字符串表示无关系）
+ */
+function checkRelationship(branch1, branch2) {
+  if (!branch1 || !branch2) return '';
+
+  const idx1 = BRANCHES.indexOf(branch1);
+  const idx2 = BRANCHES.indexOf(branch2);
+  if (idx1 === -1 || idx2 === -1) return '';
+
+  const diff = Math.abs(idx1 - idx2);
+
+  // 合（六合）
+  const he = {
+    '子': '丑', '丑': '子', '寅': '亥', '亥': '寅',
+    '卯': '戌', '戌': '卯', '辰': '酉', '酉': '辰',
+    '巳': '申', '申': '巳', '午': '未', '未': '午'
+  };
+  if (he[branch1] === branch2) return '合';
+
+  // 冲（相冲 - 6位）
+  if (diff === 6) return '冲';
+
+  // 刑（三刑）
+  const xing = {
+    '寅': ['寅', '巳', '申'], '巳': ['寅', '巳', '申'], '申': ['寅', '巳', '申'],
+    '丑': ['丑', '戌', '未'], '戌': ['丑', '戌', '未'], '未': ['丑', '戌', '未'],
+    '子': ['子', '卯'], '卯': ['子', '卯'],
+    '辰': ['辰'], '午': ['午'], '酉': ['酉'], '亥': ['亥']
+  };
+  if (xing[branch1] && xing[branch1].includes(branch2) && branch1 !== branch2) return '刑';
+
+  // 害（六害）
+  const hai = {
+    '子': '未', '未': '子', '丑': '午', '午': '丑',
+    '寅': '巳', '巳': '寅', '卯': '辰', '辰': '卯',
+    '申': '亥', '亥': '申', '酉': '戌', '戌': '酉'
+  };
+  if (hai[branch1] === branch2) return '害';
+
+  // 破（三合局破坏）
+  const po = {
+    '子': '酉', '酉': '子', '寅': '巳', '巳': '寅',
+    '辰': '丑', '丑': '辰', '午': '未', '未': '午',
+    '申': '卯', '卯': '申', '亥': '戌', '戌': '亥'
+  };
+  if (po[branch1] === branch2) return '破';
+
+  return '';
 }
 
 // 主入口
