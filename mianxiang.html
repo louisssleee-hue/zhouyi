@@ -108,30 +108,207 @@
     </div>
 
     <div id="tab-liuyear" class="tab-content active">
-      <div class="liuyear-section">
-        <div class="liuyear-card">
-          <div class="card-title">1-15岁 耳运</div>
-          <div class="card-body">耳朵主早年运程。耳高齐眉主早年聪慧，耳大厚实主福气。耳轮有缺主早年运势起伏。</div>
+      <!-- 面部百岁流年交互图 -->
+      <div class="face-interactive-wrap">
+        <!-- 左侧：SVG 人脸图 -->
+        <div class="face-svg-container">
+          <svg id="faceSVG" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg"
+               style="width:100%;max-width:320px;cursor:pointer">
+
+            <!-- 背景 -->
+            <rect width="300" height="400" fill="#0f0f18" rx="8"/>
+
+            <!-- 脸部轮廓 -->
+            <ellipse cx="150" cy="200" rx="110" ry="140"
+                     fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.6"/>
+
+            <!-- 天中 1-3岁 -->
+            <g class="face-zone" data-zone="tianz" data-age="1-3岁"
+               data-title="天中" data-desc="天中位于额头最顶部发际处，主1-3岁运势，代表祖上荫德与先天福分。此处饱满圆润者，先天根基厚实，幼年受父母庇护。">
+              <ellipse cx="150" cy="72" rx="40" ry="12" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="76" text-anchor="middle" fill="#9a8060" font-size="9" class="zone-label">天中 1-3</text>
+            </g>
+
+            <!-- 天庭 4-7岁 -->
+            <g class="face-zone" data-zone="tianting" data-age="4-7岁"
+               data-title="天庭" data-desc="天庭位于额头上部，主4-7岁运势，代表父荫与贵气。天庭高广饱满者，自幼聪颖，得长辈宠爱，官禄宫旺。">
+              <ellipse cx="150" cy="95" rx="52" ry="13" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="99" text-anchor="middle" fill="#9a8060" font-size="9" class="zone-label">天庭 4-7</text>
+            </g>
+
+            <!-- 司空 8-11岁 -->
+            <g class="face-zone" data-zone="sikong" data-age="8-11岁"
+               data-title="司空" data-desc="司空位于天庭下方，主8-11岁运势，代表学业起步与智力发展。此处无疤痕瑕疵者，学业顺利，思维清晰。">
+              <ellipse cx="150" cy="116" rx="58" ry="12" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="120" text-anchor="middle" fill="#9a8060" font-size="9" class="zone-label">司空 8-11</text>
+            </g>
+
+            <!-- 中正 12-15岁 -->
+            <g class="face-zone" data-zone="zhongzheng" data-age="12-15岁"
+               data-title="中正" data-desc="中正位于额头中部，主12-15岁运势，代表青少年期发展。此处宽广无纹者，少年意气风发，前途光明。">
+              <ellipse cx="150" cy="136" rx="62" ry="12" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="140" text-anchor="middle" fill="#9a8060" font-size="9" class="zone-label">中正 12-15</text>
+            </g>
+
+            <!-- 印堂 16-19岁 -->
+            <g class="face-zone" data-zone="yintang" data-age="16-19岁"
+               data-title="印堂（命宫）" data-desc="印堂是面相第一要地，主16-19岁运势，更代表一生格局与命运。印堂宽广光泽者，命运顺遂，贵气十足。有横纹者多挫折，发黑者近有凶兆。">
+              <ellipse cx="150" cy="170" rx="22" ry="10" fill="rgba(201,168,76,0.15)"
+                       stroke="#c9a84c" stroke-width="1.5" class="zone-shape"/>
+              <text x="150" y="174" text-anchor="middle" fill="#c9a84c" font-size="8" font-weight="bold" class="zone-label">印堂 16-19</text>
+            </g>
+
+            <!-- 左眉 31-34岁 -->
+            <g class="face-zone" data-zone="leftbrow" data-age="31-34岁"
+               data-title="左眉（兄弟宫）" data-desc="左眉主31-34岁运势，代表兄弟缘与社交能力。眉毛浓秀整齐者，兄弟有情，人际关系佳。眉头锁紧有纹者，此期多忧虑压力。">
+              <path d="M85 168 Q110 160 130 165" fill="none" stroke="rgba(201,168,76,0.5)"
+                    stroke-width="5" stroke-linecap="round" class="zone-shape"/>
+              <text x="97" y="158" text-anchor="middle" fill="#9a8060" font-size="8" class="zone-label">左眉 31</text>
+            </g>
+
+            <!-- 右眉 35-38岁 -->
+            <g class="face-zone" data-zone="rightbrow" data-age="35-38岁"
+               data-title="右眉（兄弟宫）" data-desc="右眉主35-38岁运势，代表意志力与决断力。眉尾上扬者，中年运势上升；眉尾下垂者，此期易情绪低落。">
+              <path d="M215 168 Q190 160 170 165" fill="none" stroke="rgba(201,168,76,0.5)"
+                    stroke-width="5" stroke-linecap="round" class="zone-shape"/>
+              <text x="203" y="158" text-anchor="middle" fill="#9a8060" font-size="8" class="zone-label">右眉 35</text>
+            </g>
+
+            <!-- 左眼 35-36岁 -->
+            <g class="face-zone" data-zone="lefteye" data-age="35-36岁"
+               data-title="左眼（田宅宫）" data-desc="左眼主35-36岁运势，代表不动产与居所运。眼神清澈有光者，此期房产运佳，居所稳定。眼白发红者，注意健康与感情问题。">
+              <ellipse cx="107" cy="180" rx="22" ry="13" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <ellipse cx="107" cy="180" rx="8" ry="8" fill="rgba(201,168,76,0.05)"
+                       stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+              <text x="107" y="184" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">左眼</text>
+            </g>
+
+            <!-- 右眼 37-38岁 -->
+            <g class="face-zone" data-zone="righteye" data-age="37-38岁"
+               data-title="右眼（田宅宫）" data-desc="右眼主37-38岁运势。双眼有神、黑白分明者，才智出众，感情丰富。三白眼（眼白多）者，性格刚烈，感情多波折。">
+              <ellipse cx="193" cy="180" rx="22" ry="13" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <ellipse cx="193" cy="180" rx="8" ry="8" fill="rgba(201,168,76,0.05)"
+                       stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+              <text x="193" y="184" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">右眼</text>
+            </g>
+
+            <!-- 山根 40-41岁 -->
+            <g class="face-zone" data-zone="shangen" data-age="40-41岁"
+               data-title="山根（疾厄宫）" data-desc="山根位于两眼之间鼻梁最高处，主40-41岁运势，代表健康与体质。山根饱满无横纹者，体质强健，此期少病。低陷有横纹者，需注意心脏，呼吸系统健康。">
+              <ellipse cx="150" cy="197" rx="14" ry="9" fill="rgba(201,168,76,0.12)"
+                       stroke="rgba(201,168,76,0.4)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="201" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">山根 40-41</text>
+            </g>
+
+            <!-- 年寿 42-43岁 -->
+            <g class="face-zone" data-zone="nianshou" data-age="42-43岁"
+               data-title="年寿" data-desc="年寿位于鼻梁中段，主42-43岁运势，代表中年健康与事业稳定性。年寿挺直光滑者，中年事业稳健。有节骨（突起）者，此期事业多阻。">
+              <ellipse cx="150" cy="212" rx="11" ry="8" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="216" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">年寿 42-43</text>
+            </g>
+
+            <!-- 准头（鼻头）44-47岁 -->
+            <g class="face-zone" data-zone="zhuntou" data-age="44-47岁"
+               data-title="准头（财帛宫）" data-desc="准头即鼻头，是财帛宫核心，主44-47岁财运。准头圆润丰厚者，此期财运强旺，钱财聚集。鼻尖尖削者，财来财去；鼻孔外露者，存钱困难。">
+              <ellipse cx="150" cy="230" rx="18" ry="12" fill="rgba(201,168,76,0.12)"
+                       stroke="#c9a84c" stroke-width="1.5" class="zone-shape"/>
+              <text x="150" y="234" text-anchor="middle" fill="#c9a84c" font-size="8" class="zone-label">准头 44-47</text>
+            </g>
+
+            <!-- 左颧 46岁 -->
+            <g class="face-zone" data-zone="leftcheek" data-age="46岁"
+               data-title="左颧骨" data-desc="颧骨代表权威与45-46岁运势。颧骨高而有肉者，权力欲强，中年得势。颧骨高无肉者（骷髅相），虽有权威但孤独强硬，不宜独行。">
+              <ellipse cx="90" cy="220" rx="25" ry="18" fill="rgba(201,168,76,0.06)"
+                       stroke="rgba(201,168,76,0.25)" stroke-width="1" class="zone-shape"/>
+              <text x="90" y="224" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">颧 46</text>
+            </g>
+
+            <!-- 右颧 45岁 -->
+            <g class="face-zone" data-zone="rightcheek" data-age="45岁"
+               data-title="右颧骨" data-desc="右颧骨主45岁运势。颧骨与鼻准搭配协调者，中年事业权威兼备，财富与地位并存。">
+              <ellipse cx="210" cy="220" rx="25" ry="18" fill="rgba(201,168,76,0.06)"
+                       stroke="rgba(201,168,76,0.25)" stroke-width="1" class="zone-shape"/>
+              <text x="210" y="224" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">颧 45</text>
+            </g>
+
+            <!-- 人中 51-52岁 -->
+            <g class="face-zone" data-zone="renzhong" data-age="51-52岁"
+               data-title="人中" data-desc="人中位于鼻下唇上，主51-52岁运势，代表寿命与生育能力。人中长而深者，长寿多子女。人中平浅者，寿元较短，子女缘薄。人中歪斜者，需注意泌尿生殖系统。">
+              <rect x="141" y="243" width="18" height="14" rx="3"
+                    fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="253" text-anchor="middle" fill="#9a8060" font-size="7" class="zone-label">人中 51</text>
+            </g>
+
+            <!-- 口/唇 53-57岁 -->
+            <g class="face-zone" data-zone="mouth" data-age="53-57岁"
+               data-title="口唇（福禄宫）" data-desc="口唇主53-57岁运势，代表福禄与晚年财运。嘴唇厚实端正者，福厚得食，晚年安康。口角下垂者，此期财运偏弱。唇色红润者，感情顺遂，贵人相助。">
+              <ellipse cx="150" cy="267" rx="28" ry="13" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <path d="M122 267 Q150 258 178 267" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.5"/>
+              <text x="150" y="271" text-anchor="middle" fill="#9a8060" font-size="8" class="zone-label">口唇 53-57</text>
+            </g>
+
+            <!-- 下巴 61-75岁 -->
+            <g class="face-zone" data-zone="chin" data-age="61-75岁"
+               data-title="下巴（晚年运）" data-desc="下巴主61-75岁晚年运势，代表晚年福禄与不动产。下巴圆润饱满者，晚年富足有靠，子孙孝顺。下巴尖削者，晚年漂泊不定。下巴双下巴者，晚年财运极旺。">
+              <ellipse cx="150" cy="305" rx="55" ry="28" fill="rgba(201,168,76,0.08)"
+                       stroke="rgba(201,168,76,0.3)" stroke-width="1" class="zone-shape"/>
+              <text x="150" y="309" text-anchor="middle" fill="#9a8060" font-size="8" class="zone-label">下巴 61-75</text>
+            </g>
+
+            <!-- 左耳 1-7岁 -->
+            <g class="face-zone" data-zone="leftear" data-age="1-7岁"
+               data-title="左耳" data-desc="耳朵主先天遗传与幼年运（1-7岁）。耳廓饱满、耳珠下垂者，富贵长寿，先天根基好。耳朵薄小者，体质偏弱。耳朵贴脑者，做事谨慎有主见。">
+              <ellipse cx="42" cy="200" rx="12" ry="22" fill="rgba(201,168,76,0.06)"
+                       stroke="rgba(201,168,76,0.25)" stroke-width="1" class="zone-shape"/>
+              <text x="42" y="204" text-anchor="middle" fill="#9a8060" font-size="6.5" class="zone-label">左耳</text>
+            </g>
+
+            <!-- 右耳 -->
+            <g class="face-zone" data-zone="rightear" data-age="1-7岁"
+               data-title="右耳" data-desc="右耳同样主先天与幼年运势。两耳对称、位置高于眉毛者，聪明早慧。耳轮清晰者，思维条理；耳轮模糊者，做事欠条理。">
+              <ellipse cx="258" cy="200" rx="12" ry="22" fill="rgba(201,168,76,0.06)"
+                       stroke="rgba(201,168,76,0.25)" stroke-width="1" class="zone-shape"/>
+              <text x="258" y="204" text-anchor="middle" fill="#9a8060" font-size="6.5" class="zone-label">右耳</text>
+            </g>
+
+            <!-- 法令纹 56-57岁 -->
+            <g class="face-zone" data-zone="falim" data-age="56-57岁"
+               data-title="法令纹" data-desc="法令纹主56-57岁运势，代表晚年权威与地位。法令纹清晰且包住嘴者，晚年有威望，安稳富足。法令纹入口者，晚年饮食需注意，财运起伏较大。">
+              <path d="M112 248 Q100 265 108 285" fill="none" stroke="rgba(201,168,76,0.35)"
+                    stroke-width="4" stroke-linecap="round" class="zone-shape"/>
+              <path d="M188 248 Q200 265 192 285" fill="none" stroke="rgba(201,168,76,0.35)"
+                    stroke-width="4" stroke-linecap="round" class="zone-shape"/>
+              <text x="78" y="270" text-anchor="middle" fill="#9a8060" font-size="6.5" class="zone-label">法令</text>
+            </g>
+
+            <!-- 中心竖线 -->
+            <line x1="150" y1="60" x2="150" y2="335"
+                  stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="3,4"/>
+
+          </svg>
         </div>
-        <div class="liuyear-card">
-          <div class="card-title">16-30岁 眼运</div>
-          <div class="card-body">额头主青少年时期。额宽明亮主学业顺遂，有贵相主早年得志。额窄凹陷主早年辛劳。</div>
-        </div>
-        <div class="liuyear-card">
-          <div class="card-title">31-45岁 鼻运</div>
-          <div class="card-body">鼻子主中年运。鼻高挺直主事业成，鼻翼丰满主财聚。歪斜主运势反复。</div>
-        </div>
-        <div class="liuyear-card">
-          <div class="card-title">46-60岁 颧运</div>
-          <div class="card-body">颧骨主中晚年运。颧高有肉主有权势，颧骨低陷主晚年孤独。圆润主福气。</div>
-        </div>
-        <div class="liuyear-card">
-          <div class="card-title">61-80岁 嘴运</div>
-          <div class="card-body">嘴主晚年运。唇红齿齐主晚年丰足，唇薄齿疏主晚运一般。口大主福。</div>
-        </div>
-        <div class="liuyear-card">
-          <div class="card-title">81-百岁 承浆运</div>
-          <div class="card-body">下巴主晚年与终老。下巴兜福主善终，下巴尖削主晚年孤苦。有肉主福泽深厚。</div>
+
+        <!-- 右侧：详解面板 -->
+        <div class="face-detail-panel" id="faceDetailPanel">
+          <div class="face-detail-hint">
+            <div style="font-size:2rem;margin-bottom:0.8rem">👆</div>
+            <p style="color:var(--text-dim);font-size:0.9rem">点击左侧人脸各部位<br>查看详细解说</p>
+          </div>
+          <div class="face-detail-content" id="faceDetailContent" style="display:none">
+            <div class="face-detail-zone" id="detailZone"></div>
+            <div class="face-detail-age" id="detailAge"></div>
+            <h3 class="face-detail-title" id="detailTitle"></h3>
+            <div class="gold-divider" style="margin:0.8rem 0"></div>
+            <p class="face-detail-desc" id="detailDesc"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -201,5 +378,40 @@
 </div>
 
 <script src="js/main.js"></script>
+<script>
+document.querySelectorAll('.face-zone').forEach(zone => {
+  zone.addEventListener('click', () => {
+    // 移除其他 active
+    document.querySelectorAll('.face-zone').forEach(z => z.classList.remove('active'));
+    zone.classList.add('active');
+
+    const title = zone.dataset.title;
+    const age   = zone.dataset.age;
+    const desc  = zone.dataset.desc;
+
+    document.getElementById('detailZone').textContent = zone.dataset.zone;
+    document.getElementById('detailAge').textContent  = '▸ ' + age;
+    document.getElementById('detailTitle').textContent = title;
+    document.getElementById('detailDesc').textContent  = desc;
+
+    document.querySelector('.face-detail-hint').style.display = 'none';
+    document.getElementById('faceDetailContent').style.display = 'block';
+
+    // 手机端自动滚动到详解面板
+    if (window.innerWidth < 640) {
+      document.getElementById('faceDetailPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  // 桌面端悬停预览
+  zone.addEventListener('mouseenter', () => {
+    if (!zone.classList.contains('active')) {
+      zone.querySelectorAll('.zone-shape').forEach(s => {
+        s.style.transition = 'all 0.15s';
+      });
+    }
+  });
+});
+</script>
 </body>
 </html>
