@@ -2139,3 +2139,298 @@ function copyBaziText(btn) {
     alert('复制失败: ' + err.message);
   });
 }
+
+// ==================== 合婚功能 ====================
+
+/**
+ * 合婚分析主函数
+ */
+function calcHehun() {
+  // 获取男方信息
+  const manYear = parseInt(document.getElementById('man-year').value);
+  const manMonth = parseInt(document.getElementById('man-month').value);
+  const manDay = parseInt(document.getElementById('man-day').value);
+  const manHour = parseInt(document.getElementById('man-hour').value);
+
+  // 获取女方信息
+  const womanYear = parseInt(document.getElementById('woman-year').value);
+  const womanMonth = parseInt(document.getElementById('woman-month').value);
+  const womanDay = parseInt(document.getElementById('woman-day').value);
+  const womanHour = parseInt(document.getElementById('woman-hour').value);
+
+  // 验证输入
+  if (!manYear || !womanYear) {
+    alert('请输入完整的出生信息');
+    return;
+  }
+
+  // 计算双方八字
+  const manPillars = calcBaziPillars(manYear, manMonth, manDay, manHour, 'm');
+  const womanPillars = calcBaziPillars(womanYear, womanMonth, womanDay, womanHour, 'f');
+
+  // 计算各项评分
+  const scores = {
+    wuxing: calcHehunWuxing(manPillars, womanPillars),
+    nianzhi: calcHehunNianzhi(manPillars[0].branch, womanPillars[0].branch),
+    rizhu: calcHehunRizhu(manPillars[2].stem, womanPillars[2].stem),
+    nayin: calcHehunNayin(manPillars, womanPillars)
+  };
+
+  // 计算总分
+  const totalScore = Math.round(
+    scores.wuxing.score * 0.25 +
+    scores.nianzhi.score * 0.30 +
+    scores.rizhu.score * 0.25 +
+    scores.nayin.score * 0.20
+  );
+
+  // 生成HTML
+  renderHehunResult(manPillars, womanPillars, scores, totalScore);
+}
+
+/**
+ * 五行互补分析
+ */
+function calcHehunWuxing(manPillars, womanPillars) {
+  const manEleCount = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
+  const womanEleCount = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
+
+  // 统计男方五行
+  manPillars.forEach(p => {
+    manEleCount[p.stemEle]++;
+    manEleCount[p.branchEle]++;
+  });
+
+  // 统计女方五行
+  womanPillars.forEach(p => {
+    womanEleCount[p.stemEle]++;
+    womanEleCount[p.branchEle]++;
+  });
+
+  // 计算互补程度
+  let complement = 0;
+  const elements = ['木', '火', '土', '金', '水'];
+  elements.forEach(ele => {
+    if (manEleCount[ele] === 0 && womanEleCount[ele] > 0) complement++;
+    if (womanEleCount[ele] === 0 && manEleCount[ele] > 0) complement++;
+  });
+
+  const score = Math.min(100, 60 + complement * 10);
+
+  return {
+    score,
+    man: { ...manEleCount },
+    woman: { ...womanEleCount },
+    complement
+  };
+}
+
+/**
+ * 年支关系分析
+ */
+function calcHehunNianzhi(manBranch, womanBranch) {
+  const diff = Math.abs(BRANCHES.indexOf(manBranch) - BRANCHES.indexOf(womanBranch));
+
+  // 六合
+  const liuhe = {
+    '子': '丑', '丑': '子', '寅': '亥', '亥': '寅',
+    '卯': '戌', '戌': '卯', '辰': '酉', '酉': '辰',
+    '巳': '申', '申': '巳', '午': '未', '未': '午'
+  };
+
+  // 三合
+  const sanhe = [
+    ['申', '子', '辰'], ['寅', '午', '戌'], ['亥', '卯', '未'], ['巳', '酉', '丑']
+  ];
+
+  let result = { type: '', desc: '', score: 50 };
+
+  if (liuhe[manBranch] === womanBranch) {
+    result = { type: '六合', desc: '天地合缘，婚恋大吉', score: 100 };
+  } else if (sanhe.some(g => g.includes(manBranch) && g.includes(womanBranch))) {
+    result = { type: '三合', desc: '申子辰/寅午戌/亥卯未/巳酉丑', score: 90 };
+  } else if (diff === 6) {
+    result = { type: '相冲', desc: '婚姻有波折，需磨合', score: 40 };
+  } else if ([1, 3, 5, 7, 9, 11].includes(diff)) {
+    result = { type: '相害', desc: '相处易生矛盾', score: 30 };
+  } else if ([2, 4, 8, 10].includes(diff)) {
+    result = { type: '相刑', desc: '易有是非冲突', score: 35 };
+  } else {
+    result = { type: '平和', desc: '无明显冲合', score: 60 };
+  }
+
+  return result;
+}
+
+/**
+ * 日柱天干关系
+ */
+function calcHehunRizhu(manStem, womanStem) {
+  const manEle = STEM_ELEMENTS[STEMS.indexOf(manStem)];
+  const womanEle = STEM_ELEMENTS[STEMS.indexOf(womanStem)];
+
+  const sheng = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
+  const ke = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
+
+  let result = { type: '', desc: '', score: 50 };
+
+  if (manEle === womanEle) {
+    result = { type: '比和', desc: '双方同心，相处融洽', score: 80 };
+  } else if (sheng[manEle] === womanEle) {
+    result = { type: '相生', desc: '男方包容女方', score: 85 };
+  } else if (sheng[womanEle] === manEle) {
+    result = { type: '相生', desc: '女方旺夫帮夫', score: 85 };
+  } else if (ke[manEle] === womanEle) {
+    result = { type: '相克', desc: '男方需多包容', score: 55 };
+  } else if (ke[womanEle] === manEle) {
+    result = { type: '相克', desc: '女方较为强势', score: 50 };
+  }
+
+  return result;
+}
+
+/**
+ * 纳音五行配对
+ */
+function calcHehunNayin(manPillars, womanPillars) {
+  const manNayin = manPillars.map(p => getNayin(p.stem, p.branch));
+  const womanNayin = womanPillars.map(p => getNayin(p.stem, p.branch));
+
+  const nayinEle = {
+    '海中金': '金', '炉中火': '火', '大林木': '木', '路旁土': '土', '剑锋金': '金', '山头火': '火',
+    '城头土': '土', '涧下水': '水', '杨柳木': '木', '井泉水': '水', '霹雳火': '火', '松柏木': '木',
+    '砂石金': '金', '长流水': '水', '砂石土': '土', '石榴木': '木', '大海水': '水'
+  };
+
+  const shengCombos = [
+    ['木', '火'], ['火', '土'], ['土', '金'], ['金', '水'], ['水', '木']
+  ];
+
+  let shengCount = 0;
+  let keCount = 0;
+
+  for (const mn of manNayin) {
+    const mne = nayinEle[mn] || '';
+    for (const wn of womanNayin) {
+      const wne = nayinEle[wn] || '';
+      if (shengCombos.some(c => c[0] === mne && c[1] === wne)) shengCount++;
+      if (shengCombos.some(c => c[0] === wne && c[1] === mne)) shengCount++;
+      const keMap = { '木': '土', '火': '金', '土': '水', '金': '木', '水': '火' };
+      if (keMap[mne] === wne || keMap[wne] === mne) keCount++;
+    }
+  }
+
+  let score = 50;
+  let desc = '纳音关系一般';
+
+  if (shengCount >= 3) {
+    score = 90;
+    desc = '纳音多相生，缘分深厚';
+  } else if (shengCount >= 1 && keCount === 0) {
+    score = 75;
+    desc = '纳音相生为主';
+  } else if (keCount >= 3) {
+    score = 35;
+    desc = '纳音多相克，需化解';
+  } else if (keCount > shengCount) {
+    score = 45;
+    desc = '纳音相克稍多';
+  }
+
+  return { score, desc, manNayin, womanNayin };
+}
+
+/**
+ * 渲染合婚结果
+ */
+function renderHehunResult(manPillars, womanPillars, scores, totalScore) {
+  const resultDiv = document.getElementById('hehun-result');
+  if (!resultDiv) return;
+
+  let scoreClass = 'poor';
+  let scoreLabel = '待提升';
+  if (totalScore >= 85) { scoreClass = 'excellent'; scoreLabel = '天作之合'; }
+  else if (totalScore >= 70) { scoreClass = 'good'; scoreLabel = '良好配对'; }
+  else if (totalScore >= 55) { scoreClass = 'good'; scoreLabel = '中等配对'; }
+
+  const advice = generateHehunAdvice(scores, totalScore);
+  const elements = ['木', '火', '土', '金', '水'];
+
+  let html = `
+    <div class="hehun-score">
+      <div class="hehun-score-num ${scoreClass}">${totalScore}</div>
+      <div class="hehun-score-label">${scoreLabel}</div>
+    </div>
+
+    <div class="hehun-section">
+      <div class="hehun-section-title">☯ 五行分布对比</div>
+      <table class="hehun-table">
+        <tr><th></th>${elements.map(e => `<th>${e}</th>`).join('')}</tr>
+        <tr><td class="ele-man">男方</td>${elements.map(e => `<td>${scores.wuxing.man[e] || 0}</td>`).join('')}</tr>
+        <tr><td class="ele-woman">女方</td>${elements.map(e => `<td>${scores.wuxing.woman[e] || 0}</td>`).join('')}</tr>
+      </table>
+      <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--text-dim)">
+        互补程度：${scores.wuxing.complement > 3 ? '高度互补' : scores.wuxing.complement > 1 ? '基本互补' : '五行重叠较多'}（得分：${scores.wuxing.score}分）
+      </p>
+    </div>
+
+    <div class="hehun-section">
+      <div class="hehun-section-title">📅 年支关系</div>
+      <p>
+        <span class="hehun-tag ${scores.nianzhi.score >= 70 ? 'ji' : scores.nianzhi.score < 50 ? 'xiong' : 'zhong'}">${scores.nianzhi.type}</span>
+        <span style="margin-left:0.8rem;color:var(--text-dim)">${scores.nianzhi.desc}</span>
+      </p>
+      <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-dim)">得分：${scores.nianzhi.score}分</p>
+    </div>
+
+    <div class="hehun-section">
+      <div class="hehun-section-title">🌅 日柱天干</div>
+      <p>男方日主：${manPillars[2].stem}（${manPillars[2].stemEle}性）<br>女方日主：${womanPillars[2].stem}（${womanPillars[2].stemEle}性）</p>
+      <p style="margin-top:0.5rem">
+        <span class="hehun-tag ${scores.rizhu.score >= 70 ? 'ji' : scores.rizhu.score < 50 ? 'xiong' : 'zhong'}">${scores.rizhu.type}</span>
+        <span style="margin-left:0.8rem;color:var(--text-dim)">${scores.rizhu.desc}</span>
+      </p>
+      <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-dim)">得分：${scores.rizhu.score}分</p>
+    </div>
+
+    <div class="hehun-section">
+      <div class="hehun-section-title">🔮 纳音配对</div>
+      <p>男方纳音：${scores.nayin.manNayin.join(' ')}<br>女方纳音：${scores.nayin.womanNayin.join(' ')}</p>
+      <p style="margin-top:0.5rem">
+        <span class="hehun-tag ${scores.nayin.score >= 70 ? 'ji' : scores.nayin.score < 50 ? 'xiong' : 'zhong'}">${scores.nayin.desc}</span>
+      </p>
+      <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-dim)">得分：${scores.nayin.score}分</p>
+    </div>
+
+    <div class="hehun-section">
+      <div class="hehun-section-title">💡 综合建议</div>
+      <div class="hehun-advice">${advice}</div>
+    </div>
+  `;
+
+  resultDiv.innerHTML = html;
+  resultDiv.style.display = 'block';
+}
+
+/**
+ * 生成合婚建议
+ */
+function generateHehunAdvice(scores, total) {
+  const advice = [];
+
+  if (total >= 85) advice.push('恭喜！双方八字契合度非常高，是难得的姻缘。');
+  else if (total >= 70) advice.push('双方八字较为相合，婚后生活会比较和睦。');
+  else if (total >= 55) advice.push('双方八字有一定差异，婚后需要相互包容理解。');
+  else advice.push('双方八字冲克较多，建议深入了解后再作决定。');
+
+  if (scores.nianzhi.score >= 90) advice.push('年支六合三合，双方家庭缘分深厚。');
+  else if (scores.nianzhi.score < 50) advice.push('年支存在冲克，婚后需注意化解。');
+
+  if (scores.rizhu.type === '相生') advice.push('日主相生关系，说明双方能相互扶持。');
+  else if (scores.rizhu.type === '相克') advice.push('日主存在相克，相处中需多沟通理解。');
+
+  if (scores.wuxing.complement >= 4) advice.push('五行高度互补，双方能在性格上取长补短。');
+  if (scores.nayin.score < 50) advice.push('纳音五行有相克，可通过佩戴饰品化解。');
+
+  return advice.join('<br>');
+}

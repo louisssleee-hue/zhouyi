@@ -154,6 +154,7 @@
       <button class="tab-btn" onclick="openTab(this,'tab-shensha')">神煞</button>
       <button class="tab-btn" onclick="openTab(this,'tab-jieqi')">二十四节气</button>
       <button class="tab-btn" onclick="openTab(this,'tab-sanyuan')">三元九运</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-hehun')">合婚</button>
     </div>
 
     <div id="tab-tiandi" class="tab-content active">
@@ -254,6 +255,87 @@
         <div class="card"><div class="card-title">上元 (一运~三运)</div><div class="card-body">一白水星运：1864-1883年<br>二黑土星运：1884-1903年<br>三碧木星运：1904-1923年</div></div>
         <div class="card"><div class="card-title">中元 (四运~六运)</div><div class="card-body">四绿木星运：1924-1943年<br>五黄土星运：1944-1963年<br>六白金星运：1964-1983年</div></div>
         <div class="card"><div class="card-title">下元 (七运~九运)</div><div class="card-body">七赤金星运：1984-2003年<br>八白土星运：2004-2023年<br>九紫火星运：2024-2043年</div></div>
+      </div>
+    </div>
+
+    <!-- 合婚 tab -->
+    <div id="tab-hehun" class="tab-content">
+      <div class="hehun-container">
+        <!-- 男方输入 -->
+        <div class="hehun-input">
+          <h3 class="hehun-title">☯ 男方</h3>
+          <div class="form-group">
+            <label>年份</label>
+            <input type="number" id="man-year" placeholder="如：1990" min="1900" max="2100" value="1990">
+          </div>
+          <div class="form-group">
+            <label>月份</label>
+            <input type="number" id="man-month" placeholder="1-12" min="1" max="12" value="1">
+          </div>
+          <div class="form-group">
+            <label>日期</label>
+            <input type="number" id="man-day" placeholder="1-31" min="1" max="31" value="1">
+          </div>
+          <div class="form-group">
+            <label>时辰</label>
+            <select id="man-hour">
+              <option value="0">子时(23-1)</option>
+              <option value="1">丑时(1-3)</option>
+              <option value="2">寅时(3-5)</option>
+              <option value="3">卯时(5-7)</option>
+              <option value="4">辰时(7-9)</option>
+              <option value="5">巳时(9-11)</option>
+              <option value="6">午时(11-13)</option>
+              <option value="7">未时(13-15)</option>
+              <option value="8">申时(15-17)</option>
+              <option value="9">酉时(17-19)</option>
+              <option value="10">戌时(19-21)</option>
+              <option value="11">亥时(21-23)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 中间爱心连接 -->
+        <div class="hehun-heart">❤️</div>
+
+        <!-- 女方输入 -->
+        <div class="hehun-input">
+          <h3 class="hehun-title">☯ 女方</h3>
+          <div class="form-group">
+            <label>年份</label>
+            <input type="number" id="woman-year" placeholder="如：1993" min="1900" max="2100" value="1993">
+          </div>
+          <div class="form-group">
+            <label>月份</label>
+            <input type="number" id="woman-month" placeholder="1-12" min="1" max="12" value="10">
+          </div>
+          <div class="form-group">
+            <label>日期</label>
+            <input type="number" id="woman-day" placeholder="1-31" min="1" max="31" value="11">
+          </div>
+          <div class="form-group">
+            <label>时辰</label>
+            <select id="woman-hour">
+              <option value="0">子时(23-1)</option>
+              <option value="1">丑时(1-3)</option>
+              <option value="2">寅时(3-5)</option>
+              <option value="3">卯时(5-7)</option>
+              <option value="4">辰时(7-9)</option>
+              <option value="5">巳时(9-11)</option>
+              <option value="6" selected>午时(11-13)</option>
+              <option value="7">未时(13-15)</option>
+              <option value="8">申时(15-17)</option>
+              <option value="9">酉时(17-19)</option>
+              <option value="10">戌时(19-21)</option>
+              <option value="11">亥时(21-23)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-calc" onclick="calcHehun()" style="grid-column:1/-1;margin-top:1rem">✦ 合婚分析 ✦</button>
+
+        <!-- 合婚结果 -->
+        <div id="hehun-result" class="hehun-result" style="display:none"></div>
       </div>
     </div>
   </div>

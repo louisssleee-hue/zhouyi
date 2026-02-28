@@ -1348,3 +1348,147 @@ footer {
   font-size: 0.9rem;
   color: var(--gold);
 }
+
+/* ═══════════════════════════════════════
+   合婚
+══════════════════════════════════════ */
+.hehun-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  align-items: start;
+}
+.hehun-input {
+  background: var(--ink-2);
+  border: var(--border-gold);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.hehun-title {
+  font-size: 1.1rem;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.hehun-input .form-group {
+  margin-bottom: 0.8rem;
+}
+.hehun-input .form-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+.hehun-input .form-group input,
+.hehun-input .form-group select {
+  width: 100%;
+  padding: 0.6rem;
+  background: var(--ink-3);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius);
+  color: var(--text-main);
+  font-size: 0.9rem;
+}
+.hehun-heart {
+  font-size: 2.5rem;
+  padding-top: 3rem;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.hehun-result {
+  grid-column: 1 / -1;
+  background: var(--ink-2);
+  border: var(--border-gold);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-top: 1.5rem;
+}
+.hehun-score {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.hehun-score-num {
+  font-size: 4rem;
+  font-weight: 700;
+  font-family: 'Ma Shan Zheng', cursive;
+  line-height: 1;
+}
+.hehun-score-num.excellent { color: #52b788; }
+.hehun-score-num.good { color: var(--gold); }
+.hehun-score-num.poor { color: #e74c3c; }
+.hehun-score-label {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+.hehun-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.hehun-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.hehun-section-title {
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hehun-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.hehun-table th,
+.hehun-table td {
+  padding: 0.6rem;
+  text-align: center;
+  border: 1px solid rgba(201,168,76,0.15);
+}
+.hehun-table th {
+  background: var(--ink-3);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+.hehun-table td {
+  background: var(--ink-2);
+  font-size: 0.9rem;
+}
+.hehun-table .ele-man { color: var(--gold-light); }
+.hehun-table .ele-woman { color: #e74c3c; }
+.hehun-tag {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  margin: 0.1rem;
+}
+.hehun-tag.ji { background: rgba(82,183,136,0.2); color: #52b788; }
+.hehun-tag.xiong { background: rgba(231,76,60,0.2); color: #e74c3c; }
+.hehun-tag.zhong { background: rgba(201,168,76,0.2); color: var(--gold); }
+.hehun-advice {
+  background: rgba(201,168,76,0.1);
+  padding: 1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+@media (max-width: 768px) {
+  .hehun-container {
+    grid-template-columns: 1fr;
+  }
+  .hehun-heart {
+    padding-top: 0;
+    text-align: center;
+  }
+}
