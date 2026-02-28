@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六爻占卜 · 周易玄学</title>
+  <meta name="description" content="六爻占卜，起卦解卦，动爻分析，事业财运预测">
+  <meta property="og:title" content="六爻占卜 · 周易玄学">
+  <meta property="og:description" content="六爻占卜预测，起卦解卦，动爻分析，事业财运详解">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- Navigation -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">周易</a>
+    <a href="index.html" class="nav-link"><span class="icon">🏠</span>首页</a>
+    <a href="bazi.html" class="nav-link"><span class="icon">🀄</span>八字</a>
+    <a href="fengshui.html" class="nav-link"><span class="icon">🧭</span>风水</a>
+    <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
+    <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
+    <a href="qimen.html" class="nav-link"><span class="icon">☯</span>奇门遁甲</a>
+    <a href="ziwei.html" class="nav-link"><span class="icon">⭐</span>紫微</a>
+    <a href="liuyao.html" class="nav-link active"><span class="icon">☰</span>六爻</a>
+  </div>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="page-hero-bg" src="https://images.unsplash.com/photo-1518133817093-711b80f24955?w=1400&q=80" alt="" loading="lazy">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <h2>六爻占卜</h2>
+    <p>起卦解卦 · 动爻分析 · 吉凶预测</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <p class="section-eyebrow">卜筮之学</p>
+    <h2 class="section-title">六爻占卜</h2>
+    <div class="gold-divider"></div>
+    <p class="section-desc">六爻以铜钱起卦，三枚铜钱摇六次得六爻，配以五行六亲，解读吉凶祸福。</p>
+  </div>
+
+  <!-- 六爻起卦 -->
+  <div class="liuyao-section">
+    <h3 style="color:var(--gold);font-size:1.2rem;margin-bottom:1.5rem;text-align:center">✦ 六爻起卦 · 输入占问事项 ✦</h3>
+
+    <div class="liuyao-form">
+      <div class="form-group">
+        <label>占问事项</label>
+        <select id="questionType">
+          <option value="事业">事业发展</option>
+          <option value="财运">财运投资</option>
+          <option value="婚姻">婚姻感情</option>
+          <option value="学业">学业考试</option>
+          <option value="健康">健康疾病</option>
+          <option value="出行">出行安全</option>
+          <option value="求职">求职工作</option>
+          <option value="诉讼">诉讼纠纷</option>
+          <option value="其他">其他事项</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>求测者性别</label>
+        <select id="gender">
+          <option value="m">男</option>
+          <option value="f">女</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>起卦方式</label>
+        <select id="guaMethod">
+          <option value="auto">自动随机起卦</option>
+          <option value="manual">指定卦象</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcLiuyao()">✦ 起卦问卜 ✦</button>
+
+    <div class="liuyao-result" id="liuyaoResult" style="display:none;margin-top:2rem">
+      <!-- 卦象显示 -->
+      <div class="gua-display" id="guaDisplay"></div>
+
+      <!-- 卦象解读 -->
+      <div class="result-section">
+        <p class="result-title">📖 卦象解读</p>
+        <div class="gua-analysis" id="guaAnalysis"></div>
+      </div>
+
+      <!-- 动爻分析 -->
+      <div class="result-section">
+        <p class="result-title">🔄 动爻分析</p>
+        <div class="dongyao-analysis" id="dongyaoAnalysis"></div>
+      </div>
+
+      <!-- 六亲分析 -->
+      <div class="result-section">
+        <p class="result-title">👨‍👩‍👧‍👦 六亲分析</p>
+        <div class="liuqin-grid" id="liuqinGrid"></div>
+      </div>
+
+      <!-- 吉凶判断 -->
+      <div class="result-section">
+        <p class="result-title">🎯 吉凶判断</p>
+        <div class="jieguo-box" id="jieguoBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 知识 tabs -->
+  <div style="margin-top:3rem">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(this,'tab-64gua')">六十四卦</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-liuqin')">六亲</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-lu cun')">六神</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-yongshen')">用神</button>
+    </div>
+
+    <div id="tab-64gua" class="tab-content active">
+      <div class="card-grid">
+        <div class="card"><div class="card-title">乾为天</div><div class="card-body">六爻皆阳，刚健进取。诸事大吉，吉利。</div></div>
+        <div class="card"><div class="card-title">坤为地</div><div class="card-body">六爻皆阴，柔顺厚德。平稳有吉，吉利。</div></div>
+        <div class="card"><div class="card-title">水雷屯</div><div class="card-body">坎上震下，艰难险阻。创业初期，阻滞。</div></div>
+        <div class="card"><div class="card-title">山水蒙</div><div class="card-body">艮上坎下，启蒙求知。学习阶段，吉利。</div></div>
+        <div class="card"><div class="card-title">水天需</div><div class="card-body">坎上乾下，等待时机。耐心等待，吉利。</div></div>
+        <div class="card"><div class="card-title">天水讼</div><div class="card-body">乾上坎下，争讼是非。防有诉讼，谨慎。</div></div>
+        <div class="card"><div class="card-title">地水师</div><div class="card-body">坤上坎下，领兵作战。领导有方，吉利。</div></div>
+        <div class="card"><div class="card-title">水地比</div><div class="card-body">坎上坤下，亲比依附。亲和力强，吉利。</div></div>
+        <div class="card"><div class="card-title">风天小畜</div><div class="card-body">巽上乾下，小有积蓄。渐进积累，平安。</div></div>
+        <div class="card"><div class="card-title">天泽履</div><div class="card-body">乾上兑下，踩踏虎尾。谨慎行事，吉利。</div></div>
+        <div class="card"><div class="card-title">地天泰</div><div class="card-body">坤上乾下，天地交泰。大吉大利，吉利。</div></div>
+        <div class="card"><div class="card-title">天地否</div><div class="card-body">乾上坤下，天地不交。闭塞不通，凶险。</div></div>
+      </div>
+    </div>
+
+    <div id="tab-liuqin" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">父母</div>
+          <div class="card-body">代表长辈、老师、证书、文书、房子、车辆。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">兄弟</div>
+          <div class="card-body">代表兄弟姐妹、合伙人、竞争者、阻力。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">妻财</div>
+          <div class="card-body">代表妻子、财产、金钱、货物、食物。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">子孙</div>
+          <div class="card-body">代表儿女、晚辈、僧道、技艺、动物。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">官鬼</div>
+          <div class="card-body">代表丈夫、官员、事业、疾病、灾祸。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">父母</div>
+          <div class="card-body">代表父母、长辈、贵人、庇护。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-lu cun" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">青龙</div>
+          <div class="card-body">主喜庆、吉祥、婚嫁、饮酒、财喜。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">朱雀</div>
+          <div class="card-body">主口舌、文书、言论、是非、飞翔。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">勾陈</div>
+          <div class="card-body">主争斗、诉讼、牵连、阻滞、田土。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">腾蛇</div>
+          <div class="card-body">主虚惊、怪异、梦寐、缠绕、惊恐。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">白虎</div>
+          <div class="card-body">主血光、孝服、疾病、死亡、凶灾。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">玄武</div>
+          <div class="card-body">主盗贼、欺骗、暗藏、淫乱、投机。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-yongshen" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">用神选取</div>
+          <div class="card-body">占生意：取妻财爻为用神<br>占工作：取官鬼爻为用神<br>占父母事：取父母爻为用神<br>占子女事：取子孙爻为用神</div>
+        </div>
+        <div class="card">
+          <div class="card-title">用神旺衰</div>
+          <div class="card-body">用神得地得令为旺相，吉利<br>用神失地失令为衰败，凶险<br>用神化回头生为吉，化回头克为凶</div>
+        </div>
+        <div class="card">
+          <div class="card-title">动爻吉凶</div>
+          <div class="card-body">动爻化进神：吉利<br>动爻化退神：衰退<br>动爻化空：虚假<br>动爻化破：破损</div>
+        </div>
+        <div class="card">
+          <div class="card-title">综合判断</div>
+          <div class="card-body">用神旺相+原神发动+忌神安静=大吉<br>用神衰败+忌神发动+原神安静=大凶</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-title">周易玄学</div>
+  <p>仅供参考 · 理性对待</p>
+</footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/liuyao.js"></script>
+</body>
+</html>

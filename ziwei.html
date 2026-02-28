@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紫微斗数 · 周易玄学</title>
+  <meta name="description" content="紫微斗数排盘，十四主星分析，禄权忌科四化，大限流年解读">
+  <meta property="og:title" content="紫微斗数 · 周易玄学">
+  <meta property="og:description" content="紫微斗数排盘分析，十四主星庙旺陷，禄权忌科四化，大限流年详解">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- Navigation -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">周易</a>
+    <a href="index.html" class="nav-link"><span class="icon">🏠</span>首页</a>
+    <a href="bazi.html" class="nav-link"><span class="icon">🀄</span>八字</a>
+    <a href="fengshui.html" class="nav-link"><span class="icon">🧭</span>风水</a>
+    <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
+    <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
+    <a href="qimen.html" class="nav-link"><span class="icon">☯</span>奇门遁甲</a>
+    <a href="ziwei.html" class="nav-link active"><span class="icon">⭐</span>紫微</a>
+    <a href="liuyao.html" class="nav-link"><span class="icon">☰</span>六爻</a>
+  </div>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="page-hero-bg" src="https://images.unsplash.com/photo-1532707183841-538821e42ccc?w=1400&q=80" alt="" loading="lazy">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <h2>紫微斗数</h2>
+    <p>十四主星 · 禄权忌科 · 大限流年</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <p class="section-eyebrow">星辰之学</p>
+    <h2 class="section-title">紫微斗数</h2>
+    <div class="gold-divider"></div>
+    <p class="section-desc">紫微斗数源自北斗众星，以出生年月日時排布宫位，分析命主福祸吉凶。</p>
+  </div>
+
+  <!-- 紫微排盘 -->
+  <div class="ziwei-section">
+    <h3 style="color:var(--gold);font-size:1.2rem;margin-bottom:1.5rem;text-align:center">✦ 紫微排盘 · 输入出生信息 ✦</h3>
+    <div class="ziwei-form">
+      <div class="form-group">
+        <label>历法</label>
+        <select id="calendarType">
+          <option value="solar">阳历</option>
+          <option value="lunar">阴历（农历）</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>出生年份</label>
+        <input type="number" id="birthYear" placeholder="如：1990" min="1900" max="2100" value="1990">
+      </div>
+      <div class="form-group">
+        <label>出生月份</label>
+        <select id="birthMonth">
+          <option value="1">一月</option><option value="2">二月</option><option value="3">三月</option>
+          <option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
+          <option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
+          <option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>出生日期</label>
+        <select id="birthDay" style="width:100%">
+          <script>for(let i=1;i<=31;i++) document.write(`<option value="${i}">${i}日</option>`);</script>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>出生时辰</label>
+        <select id="birthHour">
+          <option value="0">子时 (23:00-01:00)</option><option value="1">丑时 (01:00-03:00)</option>
+          <option value="2">寅时 (03:00-05:00)</option><option value="3">卯时 (05:00-07:00)</option>
+          <option value="4">辰时 (07:00-09:00)</option><option value="5">巳时 (09:00-11:00)</option>
+          <option value="6">午时 (11:00-13:00)</option><option value="7">未时 (13:00-15:00)</option>
+          <option value="8">申时 (15:00-17:00)</option><option value="9">酉时 (17:00-19:00)</option>
+          <option value="10">戌时 (19:00-21:00)</option><option value="11">亥时 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>性别</label>
+        <select id="gender"><option value="m">男</option><option value="f">女</option></select>
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcZiwei()">✦ 紫微排盘 ✦</button>
+
+    <div class="ziwei-result" id="ziweiResult" style="display:none;margin-top:2rem">
+      <!-- 命宫十二宫 -->
+      <div class="ziwei-palace-grid" id="palaceGrid"></div>
+
+      <!-- 十四主星 -->
+      <div class="result-section">
+        <p class="result-title">⭐ 十四主星</p>
+        <div class="star-grid" id="starGrid"></div>
+      </div>
+
+      <!-- 四化星 -->
+      <div class="result-section">
+        <p class="result-title">🔮 四化星</p>
+        <div class="sihua-grid" id="sihuaGrid"></div>
+      </div>
+
+      <!-- 大限 -->
+      <div class="result-section">
+        <p class="result-title">⚡ 大限</p>
+        <div class="daxian-grid" id="daxianGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 知识 tabs -->
+  <div style="margin-top:3rem">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(this,'tab-zwstars')">十四主星</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-zwpalaces')">十二宫位</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-zwsihua')">四化星</button>
+      <button class="tab-btn" onclick="openTab(this,'tab-zwmian')">星曜庙旺</button>
+    </div>
+
+    <div id="tab-zwstars" class="tab-content active">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">👑</div>
+          <div class="card-title">紫微星</div>
+          <div class="card-body">北斗星主，帝座，诸星之首。主贵气、领导、稳重。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💰</div>
+          <div class="card-title">天机星</div>
+          <div class="card-body">南斗星主，智慧之星。主机谋、变化、技艺。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">☀️</div>
+          <div class="card-title">太阳星</div>
+          <div class="card-body">中天星主，光明之星。主功名、贵气、博爱。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌙</div>
+          <div class="card-title">武曲星</div>
+          <div class="card-body">北斗星主，财星。主刚毅、果断、财富。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💜</div>
+          <div class="card-title">天同星</div>
+          <div class="card-body">南斗星主，福星。主福禄、悠闲、享受。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌿</div>
+          <div class="card-title">廉贞星</div>
+          <div class="card-body">北斗星主，囚星。主刚硬、执着、桃花。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏔️</div>
+          <div class="card-title">天府星</div>
+          <div class="card-body">南斗星主，府库。主财库、稳重、保守。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🗡️</div>
+          <div class="card-title">太阴星</div>
+          <div class="card-body">中天星主，月亮。主温柔、感情、财星。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔥</div>
+          <div class="card-title">贪狼星</div>
+          <div class="card-body">北斗星主，桃花。主欲望、交际、技艺。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚔️</div>
+          <div class="card-title">巨门星</div>
+          <div class="card-body">北斗星主，暗星。主口舌、是非、钻研。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <div class="card-title">天相星</div>
+          <div class="card-body">南斗星主，印星。主文书、权贵、服务。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏹</div>
+          <div class="card-title">天梁星</div>
+          <div class="card-body">南斗星主，荫星。主庇护、慈善、延寿。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">七杀星</div>
+          <div class="card-body">北斗星主，权星。主刚烈、权威、变动。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💎</div>
+          <div class="card-title">破军星</div>
+          <div class="card-body">北斗星主，耗星。主破耗、创新、开创。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-zwpalaces" class="tab-content">
+      <div class="card-grid">
+        <div class="card"><div class="card-title">命宫</div><div class="card-body">代表先天命格、本人性格、人生基本走向。</div></div>
+        <div class="card"><div class="card-title">兄弟宫</div><div class="card-body">代表兄弟姐妹、合伙人、竞友关系。</div></div>
+        <div class="card"><div class="card-title">夫妻宫</div><div class="card-body">代表配偶、婚姻、感情生活。</div></div>
+        <div class="card"><div class="card-title">子女宫</div><div class="card-body">代表子女、晚辈、弟子。</div></div>
+        <div class="card"><div class="card-title">财帛宫</div><div class="card-body">代表财运、收入、理财能力。</div></div>
+        <div class="card"><div class="card-title">疾厄宫</div><div class="card-body">代表健康、疾病、体质。</div></div>
+        <div class="card"><div class="card-title">迁移宫</div><div class="card-body">代表外出发展、迁移、旅行。</div></div>
+        <div class="card"><div class="card-title">奴仆宫</div><div class="card-body">代表下属、朋友、社交关系。</div></div>
+        <div class="card"><div class="card-title">官禄宫</div><div class="card-body">代表事业、职位、学业。</div></div>
+        <div class="card"><div class="card-title">田宅宫</div><div class="card-body">代表房产、不动产、家运。</div></div>
+        <div class="card"><div class="card-title">福德宫</div><div class="card-body">代表福气、享受、兴趣爱好。</div></div>
+        <div class="card"><div class="card-title">父母宫</div><div class="card-body">代表父母、长辈、上司。</div></div>
+      </div>
+    </div>
+
+    <div id="tab-zwsihua" class="tab-content">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">禄</div>
+          <div class="card-body">化禄，主财禄、福禄、享受。代表钱财、收入、吉利。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">权</div>
+          <div class="card-body">化权，主权柄、威严、成就。代表权力、地位、争夺。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">忌</div>
+          <div class="card-body">化忌，主忌讳、困扰、损失。代表障碍、执着、亏欠。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">科</div>
+          <div class="card-body">化科，主科名、功名、贵人。代表学业、名声、帮助。</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-zwmian" class="tab-content">
+      <div class="card-grid">
+        <div class="card"><div class="card-title">庙</div><div class="card-body">星曜最旺，得力。诸事大吉，吉利。</div></div>
+        <div class="card"><div class="card-title">旺</div><div class="card-body">星曜次旺，得用。事有成就，吉利。</div></div>
+        <div class="card"><div class="card-title">得地</div><div class="card-body">星曜有用，平常。事可成就，平安。</div></div>
+        <div class="card"><div class="card-title">利</div><div class="card-body">星曜尚可，劳力。需努力有成，普通。</div></div>
+        <div class="card"><div class="card-title">平</div><div class="card-body">星曜无功无过。平常而已。</div></div>
+        <div class="card"><div class="card-title">不得地</div><div class="card-body">星曜无力。事少成就，欠佳。</div></div>
+        <div class="card"><div class="card-title">陷</div><div class="card-body">星曜最弱，失用。事多阻碍，凶。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-title">周易玄学</div>
+  <p>仅供参考 · 理性对待</p>
+</footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/ziwei.js"></script>
+</body>
+</html>

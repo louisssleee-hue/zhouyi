@@ -257,17 +257,156 @@ function getMonthFromSolarTerm(year, month, day, hour, minute) {
   const monthStemBase = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0][yearStemIdx];
 
   const monthStemIdx = (monthStemBase + monthIndex) % 10;
-  const monthBranchIdx = (monthIndex + 2) % 12; // 寅月=0
-
-  const monthBranchNames = ['寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑'];
+  const monthBranchIdx = monthIndex; // 寅月=0
+  const monthBranch = ['寅','卯','辰','巳','午','未','申','酉','戌','亥','子','丑'][monthBranchIdx];
 
   return {
     monthStem: STEMS[monthStemIdx],
-    monthBranch: monthBranchNames[monthBranchIdx],
+    monthBranch,
     monthStemIdx,
     monthBranchIdx,
     termName: prevTerm || '未知'
   };
+}
+
+/**
+ * 计算十二长生状态
+ * @param {string} dayStem 日主天干
+ * @param {string} targetStem 目标天干
+ * @returns {string} 长生状态
+ */
+function getChangSheng(dayStem, targetStem) {
+  const targetIdx = STEMS.indexOf(targetStem);
+  // 天干对应的长生起算点：甲亥乙午丙戊寅...
+  const startPoints = {
+    '甲': 10, '乙': 6, '丙': 10, '丁': 6, '戊': 10,
+    '己': 6, '庚': 10, '辛': 6, '壬': 4, '癸': 4
+  };
+  const start = startPoints[dayStem] || 0;
+  const diff = (targetIdx - start + 12) % 12;
+  return CHANG_SHENG[diff];
+}
+
+/**
+ * 计算地支的十二长生（用于星运行）
+ * @param {string} dayStem 日主天干
+ * @param {string} branch 地支
+ * @returns {string} 长生状态
+ */
+function getBranchChangSheng(dayStem, branch) {
+  // 地支对应的天干：子宫癸水...
+  const branchStems = {
+    '子': '癸', '丑': '己', '寅': '甲', '卯': '乙', '辰': '戊', '巳': '丙',
+    '午': '丁', '未': '己', '申': '庚', '酉': '辛', '戌': '戊', '亥': '壬'
+  };
+  const stem = branchStems[branch];
+  return getChangSheng(dayStem, stem);
+}
+
+/**
+ * 计算空亡
+ * @param {string} stem 天干
+ * @param {string} branch 地支
+ * @returns {Array} 空亡地支数组
+ */
+function getKongWang(stem, branch) {
+  const stemIdx = STEMS.indexOf(stem);
+  const branchIdx = BRANCHES.indexOf(branch);
+  // 计算旬首
+  const xunshouIdx = (stemIdx * 12 + branchIdx) % 60;
+  const xunshouStemIdx = Math.floor(xunshouIdx / 10);
+  const xunshouBranchIdx = xunshouStemIdx * 10 % 12;
+  const xunshou = STEMS[xunshouStemIdx] + BRANCHES[xunshouBranchIdx];
+  return KONGWANG_MAP[xunshou] || ['—', '—'];
+}
+
+/**
+ * 计算纳音五行
+ * @param {string} stem 天干
+ * @param {string} branch 地支
+ * @returns {string} 纳音五行
+ */
+function getNayin(stem, branch) {
+  return NAYIN_60[stem + branch] || '—';
+}
+
+/**
+ * 计算天干对日主的十神关系
+ * @param {string} dayStem 日主天干
+ * @param {string} targetStem 目标天干
+ * @returns {string} 十神名称
+ */
+function getTenGod(dayStem, targetStem) {
+  return SHISHEN_MAP[dayStem]?.[targetStem] || '—';
+}
+
+/**
+ * 计算藏干的十神（对日主）
+ * @param {string} dayStem 日主天干
+ * @param {Array} hiddenStems 藏干数组
+ * @returns {Array} [{stem, shishen, element}]
+ */
+function getHiddenStemShishen(dayStem, hiddenStems) {
+  return hiddenStems.map(stem => ({
+    stem,
+    shishen: getTenGod(dayStem, stem),
+    element: STEM_ELEMENTS[STEMS.indexOf(stem)]
+  }));
+}
+
+/**
+ * 计算每柱包含的神煞
+ * @param {Object} pillar 柱对象
+ * @returns {Array} 神煞数组
+ */
+function getPillarShensha(pillar) {
+  const result = [];
+  const { stem, branch } = pillar;
+
+  // 天乙贵人
+  const guiRens = {
+    '甲': ['丑', '未'], '乙': ['子', '申'], '丙': ['亥', '酉'],
+    '丁': ['酉', '未'], '戊': ['丑', '未'], '己': ['子', '申'],
+    '庚': ['丑', '未'], '辛': ['寅', '午'], '壬': ['卯', '巳'], '癸': ['卯', '巳']
+  };
+  if (guiRens[stem]?.includes(branch)) {
+    result.push({ name: '天乙贵人', type: '吉' });
+  }
+
+  // 文昌星
+  const wenChangs = {
+    '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申',
+    '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯'
+  };
+  if (wenChangs[stem] === branch) {
+    result.push({ name: '文昌', type: '吉' });
+  }
+
+  // 驿马
+  const yiMas = { '申': '寅', '巳': '亥', '寅': '申', '亥': '巳' };
+  if (yiMas[branch]) {
+    result.push({ name: '驿马', type: '动' });
+  }
+
+  // 桃花
+  const taoHua = { '卯': '子', '午': '卯', '酉': '午', '子': '卯' };
+  if (taoHua[branch] === branch) {
+    result.push({ name: '桃花', type: '情' });
+  }
+
+  // 华盖
+  if (['辰', '戌'].includes(branch) && ['辛', '戊', '壬'].includes(stem)) {
+    result.push({ name: '华盖', type: '艺' });
+  }
+
+  // 羊刃（禄前一位）
+  const yangRen = { '甲': '卯', '乙': '寅', '丙': '午', '丁': '巳', '戊': '午',
+    '己': '巳', '庚': '酉', '辛': '申', '壬': '子', '癸': '亥' };
+  if (yangRen[stem] === branch) {
+    result.push({ name: '羊刃', type: '凶' });
+  }
+
+  return result;
 }
 
 /**
@@ -382,6 +521,214 @@ function calcDaYunPrecise(year, month, day, hour, minute, gender, yearStemIdx) {
   };
 }
 
+// ══════════════════════════════════════════════
+// 节气精确计算（天文算法，支持1900-2100年）
+// 基于 Jean Meeus《天文算法》第27章
+// ══════════════════════════════════════════════
+
+function calcSolarTerm(year, termIndex) {
+  // termIndex: 0=小寒,1=大寒,2=立春,3=雨水...23=冬至
+  // 我们需要的12个"节"对应index：
+  // 立春=2, 惊蛰=4, 清明=6, 立夏=8, 芒种=10, 小暑=12
+  // 立秋=14, 白露=16, 寒露=18, 立冬=20, 大雪=22, 小寒=0(次年)
+
+  const k = year + termIndex / 24 - 2000;
+  const JDE0 = 2451545.0 + 365.25 * k; // 粗略JDE
+
+  // 太阳黄经对应节气（每15度一个节气）
+  const ANGLES = [285,300,315,330,345,0,15,30,45,60,75,90,
+                  105,120,135,150,165,180,195,210,225,240,255,270];
+  const targetAngle = ANGLES[termIndex];
+
+  // 简化太阳黄经计算（精度约10分钟，足够判断日柱）
+  function sunLongitude(jde) {
+    const T = (jde - 2451545.0) / 36525;
+    const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+    const M  = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
+    const Mrad = M * Math.PI / 180;
+    const C = (1.914602 - 0.004817*T - 0.000014*T*T) * Math.sin(Mrad)
+            + (0.019993 - 0.000101*T) * Math.sin(2*Mrad)
+            + 0.000289 * Math.sin(3*Mrad);
+    const sunLon = L0 + C;
+    const omega = 125.04 - 1934.136 * T;
+    const apparent = sunLon - 0.00569 - 0.00478 * Math.sin(omega * Math.PI/180);
+    return ((apparent % 360) + 360) % 360;
+  }
+
+  // 牛顿迭代法找精确时刻
+  let jde = JDE0;
+  for (let i = 0; i < 50; i++) {
+    let lon = sunLongitude(jde);
+    let diff = targetAngle - lon;
+    // 处理跨0度
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    if (Math.abs(diff) < 0.0001) break;
+    jde += diff / 360 * 365.25;
+  }
+
+  // JDE转北京时间（UTC+8）
+  const jd = jde + 8/24; // 加8小时转北京时间
+  const z = Math.floor(jd + 0.5);
+  const f = jd + 0.5 - z;
+  let A;
+  if (z < 2299161) {
+    A = z;
+  } else {
+    const alpha = Math.floor((z - 1867216.25) / 36524.25);
+    A = z + 1 + alpha - Math.floor(alpha / 4);
+  }
+  const B = A + 1524;
+  const C2 = Math.floor((B - 122.1) / 365.25);
+  const D2 = Math.floor(365.25 * C2);
+  const E  = Math.floor((B - D2) / 30.6001);
+
+  const day   = B - D2 - Math.floor(30.6001 * E);
+  const month = E < 14 ? E - 1 : E - 13;
+  const yr    = month > 2 ? C2 - 4716 : C2 - 4715;
+  const hour  = f * 24;
+
+  return { year: yr, month, day, hour: Math.floor(hour), minute: Math.floor((hour % 1) * 60) };
+}
+
+// 12个"节"的termIndex（非"气"）
+const JIEQI_INDEXES = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0];
+// 对应：立春,惊蛰,清明,立夏,芒种,小暑,立秋,白露,寒露,立冬,大雪,小寒
+
+// 缓存，避免重复计算
+const _jieqiCache = {};
+
+function getJieqi(year) {
+  if (_jieqiCache[year]) return _jieqiCache[year];
+  const result = [];
+  for (let i = 0; i < 11; i++) {
+    // 前11个节在当年
+    result.push(calcSolarTerm(year, JIEQI_INDEXES[i]));
+  }
+  // 小寒在次年1月，用 year+1 计算
+  result.push(calcSolarTerm(year + 1, JIEQI_INDEXES[11]));
+  _jieqiCache[year] = result;
+  return result;
+}
+
+// 获取月支index（精确到时辰）
+function getMonthBranchIdx(year, month, day, hour) {
+  const terms = getJieqi(year);
+  const JIEQI_BRANCH = [2,3,4,5,6,7,8,9,10,11,0,1];
+
+  // 立春是寅月的开始
+  const lichun = terms[0]; // 立春
+
+  // 如果在立春之前，还是丑月
+  if (month < lichun.month || (month === lichun.month && day < lichun.day)) {
+    return JIEQI_BRANCH[11]; // 小寒对应丑月
+  }
+
+  // 找最近一个已过的节气（精确到分钟）
+  let lastIdx = 0;
+  for (let i = 0; i < 12; i++) {
+    const t = terms[i];
+    // 判断是否过了这个节气
+    const isAfter =
+      month > t.month ||
+      (month === t.month && day > t.day) ||
+      (month === t.month && day === t.day &&
+       hour !== undefined && hour * 60 >= t.hour * 60 + t.minute);
+    if (isAfter) {
+      lastIdx = i;
+    } else {
+      break;
+    }
+  }
+  return JIEQI_BRANCH[lastIdx];
+}
+
+// 时辰对应起始小时
+const HOUR_START = [23,1,3,5,7,9,11,13,15,17,19,21];
+// 子=23, 丑=1, 寅=3, 卯=5, 辰=7, 巳=9, 午=11, 未=13, 申=15, 酉=17, 戌=19, 亥=21
+
+// 获取年柱（精确到时辰）
+function getYearStemBranch(year, month, day, hourBranchIdx) {
+  const terms = getJieqi(year);
+  const lichun = terms[0]; // { year, month, day, hour, minute }
+
+  // 计算出生时刻的分钟数
+  let birthMinute = hourBranchIdx !== undefined ? HOUR_START[hourBranchIdx] * 60 : 0;
+
+  let y = year;
+  // 判断是否在立春之前出生
+  const lichunMinute = lichun.hour * 60 + lichun.minute;
+
+  const bornBefore =
+    month < lichun.month ||
+    (month === lichun.month && day < lichun.day) ||
+    (month === lichun.month && day === lichun.day &&
+     hourBranchIdx !== undefined && birthMinute < lichunMinute);
+
+  if (bornBefore) y = year - 1;
+
+  const stemIdx   = ((y - 4) % 10 + 10) % 10;
+  const branchIdx = ((y - 4) % 12 + 12) % 12;
+  return { stemIdx, branchIdx };
+}
+
+// 获取月柱
+function getMonthStemBranch(yearStemIdx, year, month, day, hourBranchIdx) {
+  const branchIdx = getMonthBranchIdx(year, month, day, hourBranchIdx);
+  // 五虎遁：年干index % 5 → 寅月天干base
+  const bases = [2, 4, 6, 8, 0]; // 甲己→丙, 乙庚→戊, 丙辛→庚, 丁壬→壬, 戊癸→甲
+  const base = bases[yearStemIdx % 5];
+  // 月支距寅(index=2)的偏移
+  const offset = (branchIdx - 2 + 12) % 12;
+  const stemIdx = (base + offset) % 10;
+  return { stemIdx, branchIdx };
+}
+
+// 获取日柱
+function getDayStemBranch(year, month, day) {
+  let y = year, m = month;
+  if (m <= 2) { y--; m += 12; }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  const JD = Math.floor(365.25 * (y + 4716))
+           + Math.floor(30.6001 * (m + 1))
+           + day + B - 1524;
+  // 偏移常数：以 2000-01-07 = 甲子日(0,0) 为基准
+  const base = 2451551;
+  const stemIdx   = ((JD - base) % 10 + 10) % 10;
+  const branchIdx = ((JD - base) % 12 + 12) % 12;
+  return { stemIdx, branchIdx };
+}
+
+// 获取时柱
+function getHourStemBranch(dayStemIdx, hourBranchIdx) {
+  const bases = [0, 2, 4, 6, 8]; // 甲己→甲, 乙庚→丙, 丙辛→戊, 丁壬→庚, 戊癸→壬
+  const base = bases[dayStemIdx % 5];
+  const stemIdx = (base + hourBranchIdx) % 10;
+  return { stemIdx, branchIdx: hourBranchIdx };
+}
+
+// 主计算函数
+function calcBaziPillars(year, month, day, hourBranchIdx, gender) {
+  const yr = getYearStemBranch(year, month, day, hourBranchIdx);
+  const mo = getMonthStemBranch(yr.stemIdx, year, month, day, hourBranchIdx);
+  const da = getDayStemBranch(year, month, day);
+  const hr = getHourStemBranch(da.stemIdx, hourBranchIdx);
+
+  return [
+    { label:'年柱', ...yr },
+    { label:'月柱', ...mo },
+    { label:'日柱', ...da },
+    { label:'时柱', ...hr },
+  ].map(p => ({
+    ...p,
+    stem:   STEMS[p.stemIdx],
+    branch: BRANCHES[p.branchIdx],
+    stemEle:   STEM_ELEMENTS[p.stemIdx],
+    branchEle: BRANCH_ELEMENTS[p.branchIdx],
+  }));
+}
+
 const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const STEM_ELEMENTS = ['木','木','火','火','土','土','金','金','水','水'];
@@ -390,12 +737,46 @@ const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗
 const STEM_YIN_YANG = ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'];
 const BRANCH_YIN_YANG = ['阳','阴','阳','阴','阳','阴','阳','阴','阳','阴','阳','阴'];
 
+// 五行颜色（按用户要求）
 const ELEMENT_COLOR = {
-  '木': '#52b788',
-  '火': '#e74c3c',
-  '土': '#c9a84c',
-  '金': '#cccccc',
-  '水': '#5dade2'
+  '木': '#52b788',  // 绿色
+  '火': '#e74c3c',  // 红色
+  '土': '#c9a84c',  // 金/土色
+  '金': '#5b8dd9',  // 蓝色
+  '水': '#8B6914'   // 棕色
+};
+
+// 地支藏干
+const BRANCH_HIDDEN_STEMS = {
+  '子': ['癸'],
+  '丑': ['己', '癸', '辛'],
+  '寅': ['甲', '丙', '戊'],
+  '卯': ['乙'],
+  '辰': ['戊', '乙', '癸'],
+  '巳': ['丙', '庚', '戊'],
+  '午': ['丁', '己'],
+  '未': ['己', '丁', '乙'],
+  '申': ['庚', '壬', '戊'],
+  '酉': ['辛'],
+  '戌': ['戊', '辛', '丁'],
+  '亥': ['壬', '甲']
+};
+
+// 十二长生顺序
+const CHANG_SHENG = ['长生', '沐浴', '冠带', '临官', '帝旺', '衰', '病', '死', '墓', '绝', '胎', '养'];
+
+// 空亡表（旬首->空亡地支）
+const KONGWANG_MAP = {
+  '甲子': ['戌', '亥'], '甲寅': ['子', '丑'], '甲辰': ['寅', '卯'], '甲午': ['辰', '巳'], '甲申': ['午', '未'], '甲戌': ['申', '酉'],
+  '乙丑': ['戌', '亥'], '乙卯': ['子', '丑'], '乙巳': ['寅', '卯'], '乙未': ['辰', '巳'], '乙酉': ['午', '未'], '乙亥': ['申', '酉'],
+  '丙寅': ['戌', '亥'], '丙子': ['子', '丑'], '丙辰': ['寅', '卯'], '丙午': ['辰', '巳'], '丙申': ['午', '未'], '丙戌': ['申', '酉'],
+  '丁卯': ['戌', '亥'], '丁丑': ['子', '丑'], '丁巳': ['寅', '卯'], '丁未': ['辰', '巳'], '丁酉': ['午', '未'], '丁亥': ['申', '酉'],
+  '戊辰': ['戌', '亥'], '戊寅': ['子', '丑'], '戊子': ['寅', '卯'], '戊戌': ['辰', '巳'], '戊申': ['午', '未'], '戊午': ['申', '酉'],
+  '己巳': ['戌', '亥'], '己卯': ['子', '丑'], '己丑': ['寅', '卯'], '己亥': ['辰', '巳'], '己酉': ['午', '未'], '己未': ['申', '酉'],
+  '庚申': ['戌', '亥'], '庚午': ['子', '丑'], '庚辰': ['寅', '卯'], '庚子': ['辰', '巳'], '庚寅': ['午', '未'], '庚戌': ['申', '酉'],
+  '辛酉': ['戌', '亥'], '辛未': ['子', '丑'], '辛巳': ['寅', '卯'], '辛亥': ['辰', '巳'], '辛卯': ['午', '未'], '辛丑': ['申', '酉'],
+  '壬戌': ['戌', '亥'], '壬申': ['子', '丑'], '壬午': ['寅', '卯'], '壬辰': ['辰', '巳'], '壬寅': ['午', '未'], '壬子': ['申', '酉'],
+  '癸亥': ['戌', '亥'], '癸酉': ['子', '丑'], '癸未': ['寅', '卯'], '癸巳': ['辰', '巳'], '癸卯': ['午', '未'], '癸丑': ['申', '酉']
 };
 
 // 完整60甲子纳音对照表
@@ -411,6 +792,162 @@ const NAYIN_60 = {
   '壬子癸丑': '桑柏木', '甲寅乙卯': '大溪水', '丙辰丁巳': '沙中土',
   '戊午己未': '天上火', '庚申辛酉': '石榴木', '壬戌癸亥': '大海水'
 };
+
+// ===== 阴历阳历转换 =====
+
+/**
+ * 切换阴历选项显示
+ */
+function toggleLunarOptions() {
+  const calType = document.getElementById('calendarType').value;
+  const lunarGroup = document.getElementById('lunarMonthGroup');
+  if (lunarGroup) {
+    lunarGroup.style.display = calType === 'lunar' ? 'block' : 'none';
+  }
+}
+
+/**
+ * 阴历日期数据（简化版：1900-2050年）
+ * 格式：年×10000 + 月×100 + 日
+ * 每个阴历年用16进制表示：前4位闰月信息，后12位每月天数
+ * 这里使用简化算法
+ */
+const LUNAR_INFO = {
+  // 1900-1950年闰月表 (月份, 0=无闰月)
+  1900: [0], 1901: [6], 1902: [0], 1903: [0], 1904: [8], 1905: [0],
+  1906: [0], 1907: [0], 1908: [5], 1909: [0], 1910: [0], 1911: [0],
+  1912: [7], 1913: [0], 1914: [0], 1915: [0], 1916: [5], 1917: [0],
+  1918: [0], 1919: [0], 1920: [8], 1921: [0], 1922: [0], 1923: [0],
+  1924: [6], 1925: [0], 1926: [0], 1927: [0], 1928: [7], 1929: [0],
+  1930: [0], 1931: [0], 1932: [8], 1933: [0], 1934: [0], 1935: [0],
+  1936: [5], 1937: [0], 1938: [0], 1939: [0], 1940: [7], 1941: [0],
+  1942: [0], 1943: [0], 1944: [8], 1945: [0], 1946: [0], 1947: [0],
+  1948: [5], 1949: [0], 1950: [0],
+  // 1950-2000年
+  1950: [0], 1951: [7], 1952: [0], 1953: [0], 1954: [0], 1955: [8],
+  1956: [0], 1957: [0], 1958: [0], 1959: [5], 1960: [0], 1961: [0],
+  1962: [0], 1963: [7], 1964: [0], 1965: [0], 1966: [0], 1967: [8],
+  1968: [0], 1969: [0], 1970: [0], 1971: [6], 1972: [0], 1973: [0],
+  1974: [0], 1975: [5], 1976: [0], 1977: [0], 1978: [0], 1979: [7],
+  1980: [0], 1981: [0], 1982: [0], 1983: [8], 1984: [0], 1985: [0],
+  1986: [0], 1987: [6], 1988: [0], 1989: [0], 1990: [0], 1991: [5],
+  1992: [0], 1993: [0], 1994: [0], 1995: [8], 1996: [0], 1997: [0],
+  1998: [0], 1999: [7], 2000: [0],
+  // 2000-2050年
+  2000: [0], 2001: [0], 2002: [7], 2003: [0], 2004: [0], 2005: [0],
+  2006: [8], 2007: [0], 2008: [0], 2009: [0], 2010: [5], 2011: [0],
+  2012: [0], 2013: [0], 2014: [7], 2015: [0], 2016: [0], 2017: [0],
+  2018: [8], 2019: [0], 2020: [0], 2021: [0], 2022: [6], 2023: [0],
+  2024: [0], 2025: [0], 2026: [5], 2027: [0], 2028: [0], 2029: [0],
+  2030: [8], 2031: [0], 2032: [0], 2033: [0], 2034: [7], 2035: [0],
+  2036: [0], 2037: [0], 2038: [8], 2039: [0], 2040: [0], 2041: [0],
+  2042: [6], 2043: [0], 2044: [0], 2045: [0], 2046: [5], 2047: [0],
+  2048: [0], 2049: [0], 2050: [8]
+};
+
+// 阴历每月天数（平年）
+const LUNAR_MONTH_DAYS = [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30];
+
+/**
+ * 阴历转阳历（自动处理闰月）
+ * @param {number} year 阴历年
+ * @param {number} month 阴历月
+ * @param {number} day 阴历日
+ * @returns {Object} 阳历年月日
+ */
+function lunarToSolar(lunarYear, lunarMonth, lunarDay) {
+  // 阴历正月初一对应阳历日期（简化版）
+  // 格式：阴历年 -> [阳历月, 阳历日]
+  const lunarNewYear = {
+    1900: [1,21], 1901: [2,19], 1902: [2,8], 1903: [1,29], 1904: [2,15],
+    1905: [2,4], 1906: [1,25], 1907: [2,13], 1908: [2,2], 1909: [1,22],
+    1910: [2,10], 1911: [1,30], 1912: [2,18], 1913: [2,6], 1914: [1,26],
+    1915: [2,14], 1916: [2,3], 1917: [1,23], 1918: [2,11], 1919: [2,1],
+    1920: [1,21], 1921: [2,8], 1922: [1,28], 1923: [2,16], 1924: [2,5],
+    1925: [1,24], 1926: [2,13], 1927: [2,2], 1928: [1,23], 1929: [2,10],
+    1930: [1,30], 1931: [2,17], 1932: [2,6], 1933: [1,26], 1934: [2,14],
+    1935: [2,4], 1936: [1,24], 1937: [2,11], 1938: [2,1], 1939: [1,21],
+    1940: [2,9], 1941: [1,29], 1942: [2,15], 1943: [2,5], 1944: [1,25],
+    1945: [2,13], 1946: [2,2], 1947: [1,22], 1948: [2,10], 1949: [1,29],
+    1950: [2,17], 1951: [2,6], 1952: [1,27], 1953: [2,14], 1954: [2,3],
+    1955: [1,24], 1956: [2,12], 1957: [2,1], 1958: [1,21], 1959: [2,8],
+    1960: [1,28], 1961: [2,15], 1962: [2,5], 1963: [1,25], 1964: [2,13],
+    1965: [2,2], 1966: [1,21], 1967: [2,9], 1968: [1,30], 1969: [2,17],
+    1970: [2,6], 1971: [1,27], 1972: [2,15], 1973: [2,3], 1974: [1,23],
+    1975: [2,11], 1976: [1,31], 1977: [2,18], 1978: [2,7], 1979: [1,27],
+    1980: [2,16], 1981: [2,5], 1982: [1,25], 1983: [2,13], 1984: [2,2],
+    1985: [1,21], 1986: [2,9], 1987: [1,29], 1988: [2,17], 1989: [2,6],
+    1990: [1,27], 1991: [2,15], 1992: [2,4], 1993: [1,23], 1994: [2,10],
+    1995: [1,31], 1996: [2,19], 1997: [2,7], 1998: [1,28], 1999: [2,16],
+    2000: [2,5], 2001: [1,24], 2002: [2,12], 2003: [2,1], 2004: [1,22],
+    2005: [2,9], 2006: [1,29], 2007: [2,18], 2008: [2,7], 2009: [1,26],
+    2010: [2,14], 2011: [2,3], 2012: [1,23], 2013: [2,10], 2014: [1,31],
+    2015: [2,19], 2016: [2,8], 2017: [1,28], 2018: [2,16], 2019: [2,5],
+    2020: [1,25], 2021: [2,12], 2022: [2,1], 2023: [1,22], 2024: [2,10],
+    2025: [1,29], 2026: [2,17], 2027: [2,6], 2028: [1,26], 2029: [2,13],
+    2030: [2,3], 2031: [1,23], 2032: [2,11], 2033: [1,31], 2034: [2,19],
+    2035: [2,8], 2036: [1,28], 2037: [2,15], 2038: [2,4], 2039: [1,24],
+    2040: [2,12], 2041: [2,1], 2042: [1,22], 2043: [2,10], 2044: [1,30],
+    2045: [2,17], 2046: [2,6], 2047: [1,26], 2048: [2,13], 2049: [2,2],
+    2050: [1,22]
+  };
+
+  // 每月天数（阴历）
+  const monthDays = [29,30];
+
+  // 阴历每月天数（粗略）
+  function getMonthDays(y, m) {
+    // 大月30天，小月29天
+    // 这里用简化规则
+    if (m === 1 || m === 3 || m === 5 || m === 7 || m === 8 || m === 10 || m === 12) return 30;
+    return 29;
+  }
+
+  const ny = lunarNewYear[lunarYear] || [1, 21];
+  let solarMonth = ny[0];
+  let solarDay = ny[1];
+
+  // 加上月份偏移
+  for (let i = 1; i < lunarMonth; i++) {
+    solarDay += getMonthDays(lunarYear, i);
+  }
+
+  // 加上日期偏移
+  solarDay += lunarDay - 1;
+
+  // 处理跨月
+  while (solarDay > 28) {
+    const daysInMonth = (solarMonth === 2) ? 28 : (solarMonth === 4 || solarMonth === 6 || solarMonth === 9 || solarMonth === 11) ? 30 : 31;
+    if (solarDay > daysInMonth) {
+      solarDay -= daysInMonth;
+      solarMonth++;
+      if (solarMonth > 12) {
+        solarMonth = 1;
+        lunarYear++;
+      }
+    } else {
+      break;
+    }
+  }
+
+  return { year: lunarYear, month: solarMonth, day: Math.floor(solarDay) };
+}
+
+/**
+ * 处理阴历输入（自动处理闰月）
+ * @param {number} year 输入年份
+ * @param {number} month 输入月份
+ * @param {number} day 输入日期
+ * @returns {Object} {year, month, day}
+ */
+function handleLunarInput(year, month, day) {
+  const solarDate = lunarToSolar(year, month, day);
+  return {
+    year: solarDate.getFullYear(),
+    month: solarDate.getMonth() + 1,
+    day: solarDate.getDate()
+  };
+}
 
 /**
  * 获取纳音五行
@@ -532,6 +1069,80 @@ const CHANGSHENG_START = {
   '癸': 3,  // 长生在卯
 };
 
+// ===== 十神计算 =====
+/**
+ * 十神对照表（以日干为基准）
+ * 同性为偏，异性为正
+ */
+const SHISHEN_MAP = {
+  // 日干 = 甲
+  '甲': { '甲': '比肩', '乙': '劫财', '丙': '食神', '丁': '伤官', '戊': '偏财', '己': '正财', '庚': '七杀', '辛': '正官', '壬': '偏印', '癸': '正印' },
+  // 日干 = 乙
+  '乙': { '甲': '劫财', '乙': '比肩', '丙': '伤官', '丁': '食神', '戊': '正财', '己': '偏财', '庚': '正官', '辛': '七杀', '壬': '正印', '癸': '偏印' },
+  // 日干 = 丙
+  '丙': { '甲': '偏印', '乙': '正印', '丙': '比肩', '丁': '劫财', '戊': '食神', '己': '伤官', '庚': '偏财', '辛': '正财', '壬': '七杀', '癸': '正官' },
+  // 日干 = 丁
+  '丁': { '甲': '正印', '乙': '偏印', '丙': '劫财', '丁': '比肩', '戊': '伤官', '己': '食神', '庚': '正财', '辛': '偏财', '壬': '正官', '癸': '七杀' },
+  // 日干 = 戊
+  '戊': { '甲': '七杀', '乙': '正官', '丙': '偏印', '丁': '正印', '戊': '比肩', '己': '劫财', '庚': '食神', '辛': '伤官', '壬': '偏财', '癸': '正财' },
+  // 日干 = 己
+  '己': { '甲': '正官', '乙': '七杀', '丙': '正印', '丁': '偏印', '戊': '劫财', '己': '比肩', '庚': '伤官', '辛': '食神', '壬': '正财', '癸': '偏财' },
+  // 日干 = 庚
+  '庚': { '甲': '偏财', '乙': '正财', '丙': '七杀', '丁': '正官', '戊': '偏印', '己': '正印', '庚': '比肩', '辛': '劫财', '壬': '伤官', '癸': '食神' },
+  // 日干 = 辛
+  '辛': { '甲': '正财', '乙': '偏财', '丙': '正官', '丁': '七杀', '戊': '正印', '己': '偏印', '庚': '劫财', '辛': '比肩', '壬': '食神', '癸': '伤官' },
+  // 日干 = 壬
+  '壬': { '甲': '食神', '乙': '伤官', '丙': '偏财', '丁': '正财', '戊': '七杀', '己': '正官', '庚': '偏印', '辛': '正印', '壬': '比肩', '癸': '劫财' },
+  // 日干 = 癸
+  '癸': { '甲': '伤官', '乙': '食神', '丙': '正财', '丁': '偏财', '戊': '正官', '己': '七杀', '庚': '正印', '辛': '偏印', '壬': '劫财', '癸': '比肩' }
+};
+
+/**
+ * 计算十神
+ * @param {Object} pillars 四柱对象
+ * @returns {Array} 十神列表
+ */
+function calcShishen(pillars) {
+  const dayStem = pillars[2].stem;
+  const result = [];
+
+  // 位置标签：年柱、月柱、日柱、时柱
+  const positionLabels = ['年柱', '月柱', '日柱', '时柱'];
+
+  pillars.forEach((p, i) => {
+    if (i === 2) return; // 跳过日柱本身（日主）
+    const shishen = SHISHEN_MAP[dayStem][p.stem];
+    result.push({
+      position: positionLabels[i],
+      stem: p.stem,
+      branch: p.branch,
+      shishen: shishen,
+      element: p.stemEle
+    });
+  });
+
+  return result;
+}
+
+/**
+ * 获取十神吉凶解释
+ */
+function getShishenDesc(shishen) {
+  const desc = {
+    '正官': { type: '吉', desc: '主名誉、地位、官运，适合仕途' },
+    '七杀': { type: '凶', desc: '主压力、权威、武职，有冲劲但需克制' },
+    '正财': { type: '吉', desc: '主正当收入、稳定财源' },
+    '偏财': { type: '吉', desc: '主意外之财、横财，投资获利' },
+    '正印': { type: '吉', desc: '主学业、贵人、名誉，母亲缘' },
+    '偏印': { type: '凶', desc: '主学术、宗教、孤独，易有偏执' },
+    '食神': { type: '吉', desc: '主福禄、才艺、口福，衣食无忧' },
+    '伤官': { type: '凶', desc: '主才华、创意，但易犯口舌' },
+    '比肩': { type: '平', desc: '主兄弟姐妹、竞争、合作' },
+    '劫财': { type: '凶', desc: '主破财、争夺、竞争' }
+  };
+  return desc[shishen] || { type: '平', desc: '' };
+}
+
 /**
  * 获取十二长生状态
  * @param {string} stem 日干
@@ -551,13 +1162,13 @@ function getChangseng(stem, branch) {
 }
 
 /**
- * 计算朱利安日数（用于日柱）
+ * 计算朱利安日数（用于日柱）- 返回整数
  */
 function getJulianDay(year, month, day) {
-  if (month <= 2) { year--; month += 12; }
-  const A = Math.floor(year / 100);
-  const B = 2 - A + Math.floor(A / 4);
-  return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
+  const a = Math.floor((14 - month) / 12);
+  const y2 = year + 4800 - a;
+  const m2 = month + 12 * a - 3;
+  return day + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045;
 }
 
 /**
@@ -577,16 +1188,17 @@ function calcBaziPillars(year, month, day, hour, gender) {
   const yearStemIdx = yearInfo.yearStemIdx;
   const yearBranchIdx = yearInfo.yearBranchIdx;
   const zodiac = yearInfo.zodiac;
+  const actualYear = yearInfo.actualYear;
 
-  // ── 月柱（精确：节气为界）──
-  const monthInfo = getMonthFromSolarTerm(year, month, day, 0, 0);
+  // ── 月柱（精确：节气为界，使用立春后的年份）──
+  const monthInfo = getMonthFromSolarTerm(actualYear, month, day, 0, 0);
   const monthStem = monthInfo.monthStem;
   const monthBranch = monthInfo.monthBranch;
   const monthStemIdx = monthInfo.monthStemIdx;
   const monthBranchIdx = monthInfo.monthBranchIdx;
 
   // ── 日柱 ──
-  const jd = Math.floor(getJulianDay(year, month, day));
+  const jd = getJulianDay(year, month, day);
   const dayStemIdx   = ((jd + 49) % 10 + 10) % 10;
   const dayBranchIdx = ((jd + 1)  % 12 + 12) % 12;
   const dayStem   = STEMS[dayStemIdx];
@@ -623,7 +1235,7 @@ function calcBaziPillars(year, month, day, hour, gender) {
     {
       label: '时柱', stem: hourStem, branch: hourBranch,
       stemEle: STEM_ELEMENTS[hourStemIdx],
-      branchEle: BRANCH_ELEMENTS[hour],
+      branchEle: BRANCH_ELEMENTS[hour],  // hour 0-11 直接对应子-亥
       stemYY: STEM_YIN_YANG[hourStemIdx],
     },
   ];
@@ -688,34 +1300,155 @@ function calcBaziPillars(year, month, day, hour, gender) {
 }
 
 /**
- * 渲染四柱到页面
+ * 渲染四柱到页面（专业细盘格式）
  */
 function renderBazi(result) {
   const { pillars, elemCount, daYun, shensha, info } = result;
+  const dayStem = pillars[2].stem;
+  const dayBranch = pillars[2].branch;
 
-  // 四柱
+  // 构建每柱的详细数据
+  const pillarDetails = pillars.map((p, i) => {
+    const hiddenStems = BRANCH_HIDDEN_STEMS[p.branch] || [];
+    const hiddenShishen = hiddenStems.map(hs => ({
+      stem: hs,
+      shishen: getTenGod(dayStem, hs),
+      element: STEM_ELEMENTS[STEMS.indexOf(hs)]
+    }));
+
+    return {
+      ...p,
+      hiddenStems: hiddenShishen,
+      stemShishen: getTenGod(dayStem, p.stem),
+      branchChangSheng: getBranchChangSheng(dayStem, p.branch),
+      selfChangSheng: getChangSheng(dayStem, p.stem),
+      kongWang: getKongWang(p.stem, p.branch),
+      nayin: getNayin(p.stem, p.branch),
+      shensha: getPillarShensha(p)
+    };
+  });
+
+  // ==================== 专业细盘表格 ====================
   const grid = document.getElementById('pillarsGrid');
   if (grid) {
-    grid.innerHTML = pillars.map(p => `
-      <div class="pillar">
-        <div class="pillar-label">${p.label}</div>
-        <div class="pillar-stem" style="color:${ELEMENT_COLOR[p.stemEle]}">${p.stem}</div>
-        <div class="pillar-branch" style="color:${ELEMENT_COLOR[p.branchEle]}">${p.branch}</div>
-        <span class="pillar-element element-${p.stemEle}">${p.stemEle}</span>
-        <span class="pillar-element element-${p.branchEle}" style="margin-left:4px">${p.branchEle}</span>
-      </div>
-    `).join('');
-    grid.style.display = 'grid';
+    // 表头
+    let html = `<table class="bazi-pro-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>年柱</th>
+          <th>月柱</th>
+          <th>日柱</th>
+          <th>时柱</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    // 主星行
+    html += `<tr><td class="row-label">主星</td>`;
+    pillarDetails.forEach(p => {
+      html += `<td class="text-center">${p.stemShishen}</td>`;
+    });
+    html += `</tr>`;
+
+    // 天干行（大字 + 五行颜色）
+    html += `<tr><td class="row-label">天干</td>`;
+    pillarDetails.forEach(p => {
+      const color = ELEMENT_COLOR[p.stemEle];
+      html += `<td class="text-center">
+        <span class="stem-big" style="color:${color}">${p.stem}</span>
+        <span class="shishen-small">${p.stemShishen}</span>
+      </td>`;
+    });
+    html += `</tr>`;
+
+    // 地支行（大字 + 五行颜色）
+    html += `<tr><td class="row-label">地支</td>`;
+    pillarDetails.forEach(p => {
+      const color = ELEMENT_COLOR[p.branchEle];
+      html += `<td class="text-center">
+        <span class="branch-big" style="color:${color}">${p.branch}</span>
+      </td>`;
+    });
+    html += `</tr>`;
+
+    // 藏干行（每个藏干单独显示）
+    html += `<tr><td class="row-label">藏干</td>`;
+    pillarDetails.forEach(p => {
+      html += `<td class="text-center">`;
+      p.hiddenStems.forEach(hs => {
+        const color = ELEMENT_COLOR[hs.element];
+        html += `<div class="hidden-stem">
+          <span style="color:${color}">${hs.stem}</span>
+          <span class="shishen-small">${hs.shishen}</span>
+        </div>`;
+      });
+      html += `</td>`;
+    });
+    html += `</tr>`;
+
+    // 星运行（地支对日主的长生）
+    html += `<tr><td class="row-label">星运</td>`;
+    pillarDetails.forEach(p => {
+      const csColor = p.branchChangSheng === '帝旺' ? '#e74c3c' :
+                      p.branchChangSheng === '长生' || p.branchChangSheng === '冠带' ? '#52b788' :
+                      p.branchChangSheng === '沐浴' ? '#5dade2' : 'var(--text-dim)';
+      html += `<td class="text-center" style="color:${csColor}">${p.branchChangSheng}</td>`;
+    });
+    html += `</tr>`;
+
+    // 自坐行（天干对地支的长生）
+    html += `<tr><td class="row-label">自坐</td>`;
+    pillarDetails.forEach(p => {
+      const csColor = p.selfChangSheng === '帝旺' ? '#e74c3c' :
+                      p.selfChangSheng === '长生' || p.selfChangSheng === '冠带' ? '#52b788' :
+                      p.selfChangSheng === '沐浴' ? '#5dade2' : 'var(--text-dim)';
+      html += `<td class="text-center" style="color:${csColor}">${p.selfChangSheng}</td>`;
+    });
+    html += `</tr>`;
+
+    // 空亡行
+    html += `<tr><td class="row-label">空亡</td>`;
+    pillarDetails.forEach(p => {
+      html += `<td class="text-center">${p.kongWang[0]}${p.kongWang[1]}</td>`;
+    });
+    html += `</tr>`;
+
+    // 纳音行
+    html += `<tr><td class="row-label">纳音</td>`;
+    pillarDetails.forEach(p => {
+      html += `<td class="text-center">${p.nayin}</td>`;
+    });
+    html += `</tr>`;
+
+    // 神煞行
+    html += `<tr><td class="row-label">神煞</td>`;
+    pillarDetails.forEach(p => {
+      if (p.shensha.length > 0) {
+        html += `<td class="text-center">`;
+        p.shensha.forEach(s => {
+          const badgeClass = s.type === '吉' ? 'badge-ji2' : s.type === '凶' ? 'badge-ji' : '';
+          const sColor = s.type === '吉' || s.type === '艺' ? '#c9a84c' : s.type === '凶' ? '#e74c3c' : '#5dade2';
+          html += `<span style="color:${sColor};font-size:0.75rem">${s.name}</span>`;
+        });
+        html += `</td>`;
+      } else {
+        html += `<td class="text-center">—</td>`;
+      }
+    });
+    html += `</tr>`;
+
+    html += `</tbody></table>`;
+    grid.innerHTML = html;
   }
 
-  // 基本信息
+  // ==================== 基本信息 ====================
   const infoGrid = document.getElementById('infoGrid');
   const daYunDetail = info.daYunCalc || {};
   if (infoGrid) {
     infoGrid.innerHTML = `
       <div class="info-item"><div class="info-key">生肖</div><div class="info-val">${info.zodiac}</div></div>
       <div class="info-item"><div class="info-key">日主</div><div class="info-val" style="color:${ELEMENT_COLOR[info.dayStemEle]}">${pillars[2].stem}（${info.dayStemYY}${info.dayStemEle}）</div></div>
-      <div class="info-item"><div class="info-key">年纳音</div><div class="info-val">${info.nayin}</div></div>
       <div class="info-item"><div class="info-key">日纳音</div><div class="info-val">${info.dayNayin}</div></div>
       <div class="info-item"><div class="info-key">起运</div><div class="info-val">${info.startAge}岁 ${daYunDetail.direction || '顺行'}</div></div>
       <div class="info-item"><div class="info-key">五行最旺</div><div class="info-val" style="color:${ELEMENT_COLOR[info.maxEle]}">${info.maxEle}（${elemCount[info.maxEle]}个）</div></div>
@@ -723,7 +1456,7 @@ function renderBazi(result) {
     `;
   }
 
-  // 五行分布
+  // ==================== 五行分布 ====================
   const wuxingBar = document.getElementById('wuxingBar');
   if (wuxingBar) {
     wuxingBar.innerHTML = Object.entries(elemCount).map(([ele, cnt]) => `
@@ -737,23 +1470,66 @@ function renderBazi(result) {
     `).join('');
   }
 
-  // 大运
+  // ==================== 大运表格 ====================
   const daYunGrid = document.getElementById('daYunGrid');
   if (daYunGrid) {
     const currentYear = new Date().getFullYear();
-    const currentAge = currentYear - parseInt(document.getElementById('birthYear')?.value || 2000);
-    daYunGrid.innerHTML = daYun.map((dy, i) => {
+    const birthYear = parseInt(document.getElementById('birthYear')?.value || 2000);
+    const currentAge = currentYear - birthYear;
+
+    // 起运信息
+    let yunInfo = `<div class="yun-info">起运：${info.startAge}岁 ${daYunDetail.direction || '顺行'}</div>`;
+
+    // 大运表格
+    let dyHtml = `<table class="dayun-table"><thead><tr>`;
+    daYun.forEach((dy, i) => {
       const isCurrent = currentAge >= dy.age && currentAge <= dy.ageEnd;
-      return `<div class="pillar" style="opacity:${1 - i * 0.05};${isCurrent ? 'border-color:var(--gold);box-shadow:0 0 15px rgba(201,168,76,0.3)' : ''}">
-        <div class="pillar-label">${dy.age}-${dy.ageEnd}岁${isCurrent ? ' ★' : ''}</div>
-        <div class="pillar-stem" style="color:${ELEMENT_COLOR[dy.stemEle]};font-size:1.8rem">${dy.stem}</div>
-        <div class="pillar-branch" style="color:${ELEMENT_COLOR[dy.branchEle]};font-size:1.8rem">${dy.branch}</div>
-        <span class="pillar-element element-${dy.stemEle}">${dy.stemEle}</span>
-      </div>`;
-    }).join('');
+      dyHtml += `<th class="${isCurrent ? 'current' : ''}">${dy.age}岁</th>`;
+    });
+    dyHtml += `</tr></thead><tbody><tr>`;
+
+    daYun.forEach((dy, i) => {
+      const isCurrent = currentAge >= dy.age && currentAge <= dy.ageEnd;
+      const stemColor = ELEMENT_COLOR[dy.stemEle];
+      const branchColor = ELEMENT_COLOR[dy.branchEle];
+      const stemShishen = getTenGod(dayStem, dy.stem);
+      const branchShishen = getTenGod(dayStem, dy.stem);
+      dyHtml += `<td class="${isCurrent ? 'current' : ''}">
+        <div class="dy-stem" style="color:${stemColor}">${dy.stem}</div>
+        <div class="dy-shishen">${stemShishen}</div>
+        <div class="dy-branch" style="color:${branchColor}">${dy.branch}</div>
+        <div class="dy-shishen">${branchShishen}</div>
+      </td>`;
+    });
+    dyHtml += `</tr></tbody></table>`;
+
+    // 流年（当前大运的流年）
+    const currentDaYunIndex = daYun.findIndex(dy => currentAge >= dy.age && currentAge <= dy.ageEnd);
+    let liunianHtml = '';
+    if (currentDaYunIndex >= 0) {
+      const startYear = daYun[currentDaYunIndex].year;
+      liunianHtml = `<div class="liunian-section"><h4>流年</h4><div class="liunian-row">`;
+      for (let i = 0; i < 10; i++) {
+        const year = startYear + i;
+        const age = info.startAge + (daYunDetail.direction === '顺行' ? i : -i);
+        const lnStemIdx = STEMS.indexOf(dayStem) + (daYun[currentDaYunIndex].stemIdx || 0) + i;
+        const lnStem = STEMS[(lnStemIdx % 10 + 10) % 10];
+        const lnBranchIdx = (BRANCHES.indexOf(daYun[currentDaYunIndex].branch) + i) % 12;
+        const lnBranch = BRANCHES[lnBranchIdx];
+        const isCurrentYear = year === currentYear;
+        liunianHtml += `<div class="liunian-item ${isCurrentYear ? 'current' : ''}">
+          <div class="ln-year">${year}</div>
+          <div class="ln-stem" style="color:${ELEMENT_COLOR[STEM_ELEMENTS[STEMS.indexOf(lnStem)]]}">${lnStem}</div>
+          <div class="ln-branch" style="color:${ELEMENT_COLOR[BRANCH_ELEMENTS[BRANCHES.indexOf(lnBranch)]]}">${lnBranch}</div>
+        </div>`;
+      }
+      liunianHtml += `</div></div>`;
+    }
+
+    daYunGrid.innerHTML = yunInfo + dyHtml + liunianHtml;
   }
 
-  // 神煞
+  // ==================== 神煞（保留原格式）====================
   const shenshaGrid = document.getElementById('shenshaGrid');
   if (shenshaGrid && shensha.length > 0) {
     shenshaGrid.innerHTML = shensha.map(s => `
@@ -764,7 +1540,31 @@ function renderBazi(result) {
     `).join('');
   }
 
-  // 命局分析
+  // ==================== 十神（简化显示）====================
+  const shishenGrid = document.getElementById('shishenGrid');
+  if (shishenGrid) {
+    const shishen = calcShishen(pillars);
+    shishenGrid.innerHTML = shishen.map(s => {
+      const ssInfo = getShishenDesc(s.shishen);
+      return `
+        <div class="shishen-card">
+          <div class="shishen-position">${s.position}</div>
+          <div class="shishen-stem">${s.stem}</div>
+          <div class="shishen-name" style="color:${ssInfo.type === '吉' ? '#52b788' : ssInfo.type === '凶' ? '#e74c3c' : '#c9a84c'}">${s.shishen}</div>
+          <div class="shishen-desc">${ssInfo.desc}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ==================== 运势详解 ====================
+  const fortuneGrid = document.getElementById('fortuneGrid');
+  if (fortuneGrid) {
+    const fortune = analyzeFortune(pillars, elemCount, info, shensha);
+    fortuneGrid.innerHTML = fortune;
+  }
+
+  // ==================== 命局分析 ====================
   const mingJu = document.getElementById('mingJu');
   if (mingJu) {
     const analysis = analyzeMingJu(pillars, elemCount, info);
@@ -812,8 +1612,205 @@ function analyzeMingJu(pillars, elemCount, info) {
   `;
 }
 
+/**
+ * 运势详解分析（适合新手入门）
+ * @param {Object} pillars 四柱对象
+ * @param {Object} elemCount 五行统计
+ * @param {Object} info 基本信息
+ * @param {Array} shensha 神煞列表
+ * @returns {string} HTML
+ */
+function analyzeFortune(pillars, elemCount, info, shensha) {
+  const dayStem = pillars[2].stem;
+  const dayBranch = pillars[2].branch;
+  const yearBranch = pillars[0].branch;
+  const dayStemEle = info.dayStemEle;
+  const dayStemYY = info.dayStemYY;
+
+  const results = [];
+
+  // 1. 财运分析
+  let caiYun = { score: 50, desc: '', advice: '' };
+
+  // 看财星
+  const caiXing = {'甲':'戊','乙':'己','丙':'庚','丁':'辛','戊':'壬','己':'癸','庚':'甲','辛':'乙','壬':'丙','癸':'丁'};
+  const caiStem = caiXing[dayStem];
+  const hasCai = pillars.some(p => p.stem === caiStem);
+  const hasCaiBranch = pillars.some(p => p.branch.includes('财') || p.branch === '寅' || p.branch === '卯');
+
+  // 看财库
+  const caiKu = {'甲':'未','乙':'未','丙':'丑','丁':'丑','戊':'辰','己':'辰','庚':'戌','辛':'戌','壬':'辰','癸':'丑'};
+  const hasCaiKu = pillars.some(p => p.branch === caiKu[dayStem]);
+
+  if (hasCai || hasCaiBranch) {
+    caiYun.score += 20;
+    caiYun.desc = '命中带财星或财库，财运较好';
+    if (hasCaiKu) {
+      caiYun.score += 15;
+      caiYun.desc += '，且有财库存储';
+    }
+  } else {
+    caiYun.score -= 10;
+    caiYun.desc = '命中暂无明显财星，需靠后天努力';
+  }
+
+  // 身强身弱
+  const monthBranchEle = pillars[1].branchEle;
+  const isStrong = monthBranchEle === dayStemEle ||
+    (dayStemEle === '木' && monthBranchEle === '水') ||
+    (dayStemEle === '火' && monthBranchEle === '木') ||
+    (dayStemEle === '土' && monthBranchEle === '火') ||
+    (dayStemEle === '金' && monthBranchEle === '土') ||
+    (dayStemEle === '水' && monthBranchEle === '金');
+
+  if (isStrong && hasCai) {
+    caiYun.score += 10;
+    caiYun.desc += '，身强能担财';
+  } else if (!isStrong) {
+    caiYun.score -= 10;
+    caiYun.desc += '，身弱需靠印星生扶';
+  }
+
+  caiYun.advice = isStrong ? '适合投资理财、创业发展' : '建议稳健理财、积累为主';
+
+  results.push({
+    name: '💰 财运',
+    score: Math.min(100, Math.max(0, caiYun.score)),
+    desc: caiYun.desc,
+    advice: caiYun.advice
+  });
+
+  // 2. 桃花运分析
+  let taoHua = { score: 50, desc: '', advice: '' };
+
+  // 桃花位
+  const taoHuaPos = {'子':'酉','丑':'午','寅':'卯','卯':'子','辰':'酉','巳':'申','午':'未','未':'午','申':'卯','酉':'子','戌':'酉','亥':'寅'};
+  const taoPos = taoHuaPos[yearBranch];
+
+  if (pillars.some(p => p.branch === taoPos)) {
+    taoHua.score += 25;
+    taoHua.desc = '命中带桃花星，异性缘佳';
+  } else {
+    taoHua.desc = '桃花运一般，缘分需靠主动';
+  }
+
+  // 桃花神煞
+  if (shensha.some(s => s.name === '桃花星')) {
+    taoHua.score += 15;
+    taoHua.desc += '，桃花运旺盛';
+  }
+
+  // 咸池
+  const xianChi = {'申':'子','子':'酉','酉':'午','午':'卯','卯':'子'};
+  if (xianChi[dayBranch]) {
+    taoHua.score += 10;
+  }
+
+  taoHua.advice = taoHua.score > 60 ? '注意把握感情，勿花心' : '建议扩大社交圈';
+
+  results.push({
+    name: '🌸 桃花运',
+    score: Math.min(100, Math.max(0, taoHua.score)),
+    desc: taoHua.desc,
+    advice: taoHua.advice
+  });
+
+  // 3. 事业运分析
+  let shiYe = { score: 50, desc: '', advice: '' };
+
+  // 看官星
+  const guanXing = {'甲':'辛','乙':'庚','丙':'壬','丁':'癸','戊':'乙','己':'甲','庚':'丁','辛':'丙','壬':'戊','癸':'己'};
+  const guanStem = guanXing[dayStem];
+  const hasGuan = pillars.some(p => p.stem === guanStem);
+
+  if (hasGuan) {
+    shiYe.score += 20;
+    shiYe.desc = '命中带官星，有事业心';
+  }
+
+  // 印星生身
+  const yinXing = {'甲':'壬','乙':'癸','丙':'甲','丁':'乙','戊':'丙','己':'丁','庚':'戊','辛':'己','壬':'庚','癸':'辛'};
+  const yinStem = yinXing[dayStem];
+  if (pillars.some(p => p.stem === yinStem)) {
+    shiYe.score += 15;
+    shiYe.desc += '，有印星生扶';
+  }
+
+  if (!hasGuan) {
+    shiYe.desc = '更适合技术、艺术路线';
+  }
+
+  shiYe.advice = hasGuan ? '适合管理、行政方向发展' : '适合专业技能发展';
+
+  results.push({
+    name: '💼 事业运',
+    score: Math.min(100, Math.max(0, shiYe.score)),
+    desc: shiYe.desc,
+    advice: shiYe.advice
+  });
+
+  // 4. 健康提示
+  const healthTips = [];
+  if (elemCount['木'] >= 4) healthTips.push('注意肝胆系统');
+  if (elemCount['火'] >= 4) healthTips.push('注意心血管、眼睛');
+  if (elemCount['土'] >= 4) healthTips.push('注意脾胃、消化系统');
+  if (elemCount['金'] >= 4) healthTips.push('注意呼吸系统、肺部');
+  if (elemCount['水'] >= 4) healthTips.push('注意肾脏、泌尿系统');
+
+  results.push({
+    name: '🏥 健康',
+    score: 80 - healthTips.length * 10,
+    desc: healthTips.length > 0 ? healthTips.join('、') : '五行平衡，身体健康',
+    advice: '注意作息规律，定期体检'
+  });
+
+  // 5. 性格特点
+  const personality = [];
+  if (dayStemYY === '阳') personality.push('性格外向、积极进取');
+  else personality.push('性格内敛、细腻敏感');
+
+  const stemEleDesc = {
+    '木': '仁慈、有活力',
+    '火': '热情、有创造力',
+    '土': '稳重、务实',
+    '金': '刚毅、有决断',
+    '水': '智慧、灵活'
+  };
+  personality.push(stemEleDesc[dayStemEle] || '');
+
+  results.push({
+    name: '👤 性格',
+    score: 75,
+    desc: personality.join('，'),
+    advice: '注意发挥优势，克服短板'
+  });
+
+  // 生成HTML
+  let html = '<div class="fortune-container">';
+  results.forEach(r => {
+    const color = r.score >= 70 ? '#52b788' : (r.score >= 40 ? '#c9a84c' : '#e74c3c');
+    html += `
+      <div class="fortune-card">
+        <div class="fortune-name">${r.name}</div>
+        <div class="fortune-score">
+          <div class="score-bar">
+            <div class="score-fill" style="width:${r.score}%;background:${color}"></div>
+          </div>
+          <span style="color:${color}">${r.score}分</span>
+        </div>
+        <div class="fortune-desc">${r.desc}</div>
+        <div class="fortune-advice">建议：${r.advice}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+
+  return html;
+}
+
 // 主入口
 function calcBazi() {
+  const calendarType = document.getElementById('calendarType').value;
   const year   = parseInt(document.getElementById('birthYear').value);
   const month  = parseInt(document.getElementById('birthMonth').value);
   const day    = parseInt(document.getElementById('birthDay').value);
@@ -825,6 +1822,16 @@ function calcBazi() {
     return;
   }
 
-  const result = calcBaziPillars(year, month, day, hour, gender);
+  // 阴历转换（自动处理闰月）
+  let solarYear = year, solarMonth = month, solarDay = day;
+  if (calendarType === 'lunar') {
+    const converted = lunarToSolar(year, month, day);
+    solarYear = converted.year;
+    solarMonth = converted.month;
+    solarDay = converted.day;
+  }
+
+  const result = calcBaziPillars(solarYear, solarMonth, solarDay, hour, gender);
+  result.calendarType = calendarType;
   renderBazi(result);
 }

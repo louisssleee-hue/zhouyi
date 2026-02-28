@@ -367,6 +367,177 @@ section {
   box-shadow: 0 0 20px rgba(192,57,43,0.4);
 }
 
+/* 专业细盘表格 */
+.bazi-pro-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ink-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.bazi-pro-table th,
+.bazi-pro-table td {
+  padding: 1rem 0.8rem;
+  border: 1px solid rgba(201,168,76,0.1);
+  text-align: center;
+  vertical-align: middle;
+}
+.bazi-pro-table th {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  background: var(--ink-3);
+}
+.bazi-pro-table .row-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: right;
+  padding-right: 1rem;
+  width: 50px;
+  background: var(--ink-3);
+}
+.bazi-pro-table td:nth-child(3) {
+  background: rgba(201,168,76,0.05);
+}
+.text-center { text-align: center; }
+
+/* 天干大字 */
+.stem-big {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: block;
+  line-height: 1.2;
+}
+/* 地支大字 */
+.branch-big {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: block;
+  line-height: 1.2;
+}
+/* 十神小字 */
+.shishen-small {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  display: block;
+  margin-top: 0.2rem;
+}
+/* 藏干 */
+.hidden-stem {
+  font-size: 0.85rem;
+  padding: 0.2rem 0;
+}
+.hidden-stem .shishen-small {
+  display: inline;
+  margin-left: 0.3rem;
+}
+
+/* 大运表格 */
+.dayun-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.dayun-table th,
+.dayun-table td {
+  padding: 0.5rem;
+  border: 1px solid rgba(201,168,76,0.15);
+  text-align: center;
+}
+.dayun-table th {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: var(--ink-3);
+}
+.dayun-table th.current {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.dayun-table td {
+  background: var(--ink-2);
+}
+.dayun-table td.current {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+  box-shadow: inset 0 0 10px rgba(201,168,76,0.2);
+}
+.dy-stem {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.dy-branch {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.dy-shishen {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+.yun-info {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 0.5rem;
+  background: var(--ink-3);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+/* 流年 */
+.liunian-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201,168,76,0.15);
+}
+.liunian-section h4 {
+  font-size: 0.85rem;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+.liunian-row {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+.liunian-item {
+  flex: 0 0 auto;
+  min-width: 45px;
+  padding: 0.4rem 0.3rem;
+  background: var(--ink-2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+.liunian-item.current {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+}
+.ln-year {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+.ln-stem,
+.ln-branch {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* 专业细盘表格 - 覆盖 pillars-grid */
+#pillarsGrid {
+  display: block !important;
+}
+
 /* 四柱 */
 .pillars-grid {
   display: none;
@@ -535,6 +706,30 @@ section {
 .badge-ji  { background: rgba(192,57,43,0.3); color: #e74c3c; }
 .badge-ji2 { background: rgba(201,168,76,0.2); color: var(--gold); }
 
+/* 十神样式 */
+.shishen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+.shishen-card {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 1rem; text-align: center;
+}
+.shishen-position { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+.shishen-stem { font-size: 1.4rem; font-weight: 700; color: var(--gold-light); }
+.shishen-name { font-size: 0.95rem; margin: 0.3rem 0; font-weight: 600; }
+.shishen-desc { font-size: 0.7rem; color: var(--text-dim); line-height: 1.5; }
+
+/* 运势详解样式 */
+.fortune-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.fortune-card {
+  background: var(--ink-2); border: var(--border-gold);
+  border-radius: var(--radius); padding: 1.2rem;
+}
+.fortune-name { font-size: 1rem; color: var(--gold); margin-bottom: 0.8rem; font-weight: 600; }
+.fortune-score { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; }
+.score-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.fortune-desc { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+.fortune-advice { font-size: 0.75rem; color: var(--gold); }
+
 /* ══════════════════════════════════════
    MIANXIANG / FACE
 ══════════════════════════════════════ */
@@ -680,4 +875,206 @@ footer {
   .face-zones { grid-template-columns: 1fr; }
   .hero-title { font-size: 3rem; }
   .jieqi-list { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ===== 紫微斗数样式 ===== */
+.ziwei-palace-table {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+.ziwei-palace-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ink-2);
+}
+.ziwei-palace-table th,
+.ziwei-palace-table td {
+  padding: 0.8rem;
+  border: 1px solid rgba(201,168,76,0.15);
+  text-align: center;
+  font-size: 0.85rem;
+}
+.ziwei-palace-table th {
+  background: var(--ink-3);
+  color: var(--gold);
+}
+.ziwei-palace-table tr.highlight td {
+  background: rgba(201,168,76,0.1);
+}
+
+.stars-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.star-item {
+  background: var(--ink-3);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+.star-name {
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.star-level {
+  font-size: 0.75rem;
+  color: var(--jade-light);
+  margin-bottom: 0.5rem;
+}
+.star-desc {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.sihua-grid {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.sihua-item {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  background: var(--ink-3);
+  border-radius: var(--radius);
+  min-width: 80px;
+}
+.sihua-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  display: block;
+}
+.sihua-star {
+  font-size: 1.3rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.daxian-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+.daxian-item {
+  flex: 0 0 auto;
+  min-width: 60px;
+  padding: 0.8rem 0.5rem;
+  background: var(--ink-2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+.daxian-item.current {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+}
+.dx-age {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+.dx-gong {
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-top: 0.3rem;
+}
+
+/* ===== 六爻样式 ===== */
+.gua-display {
+  text-align: center;
+  padding: 2rem;
+  background: var(--ink-2);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+.gua-box {
+  display: inline-block;
+}
+.gua-name {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.gua-feng {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.gua-yaos {
+  font-family: monospace;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.yao-line {
+  color: var(--text);
+}
+.yao-line.dong {
+  color: var(--gold);
+}
+
+.gua-analysis,
+.dongyao-analysis {
+  background: var(--ink-2);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  line-height: 1.8;
+}
+
+.liuqin-items {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.liuqin-item {
+  background: var(--ink-2);
+  padding: 0.8rem 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid rgba(201,168,76,0.1);
+}
+.liuqin-item.yongshen {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.1);
+}
+.lq-yao {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+.lq-name {
+  font-size: 0.9rem;
+  color: var(--gold);
+  margin: 0.3rem 0;
+}
+.lq-star {
+  font-size: 0.75rem;
+  color: var(--jade-light);
+}
+
+.jieguo-box {
+  background: var(--ink-2);
+  padding: 2rem;
+  border-radius: var(--radius);
+  text-align: center;
+}
+.jieguo-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.jieguo-desc {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.jieguo-yongshen {
+  font-size: 0.9rem;
+  color: var(--gold);
 }

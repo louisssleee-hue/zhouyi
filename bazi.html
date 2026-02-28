@@ -23,6 +23,8 @@
     <a href="mianxiang.html" class="nav-link"><span class="icon">👁</span>面相</a>
     <a href="shouxiang.html" class="nav-link"><span class="icon">✋</span>手相</a>
     <a href="qimen.html" class="nav-link"><span class="icon">☯</span>奇门遁甲</a>
+    <a href="ziwei.html" class="nav-link"><span class="icon">⭐</span>紫微</a>
+    <a href="liuyao.html" class="nav-link"><span class="icon">☰</span>六爻</a>
   </div>
 </nav>
 
@@ -48,6 +50,13 @@
   <div class="bazi-section">
     <h3 style="color:var(--gold);font-size:1.2rem;margin-bottom:1.5rem;text-align:center">✦ 四柱排盘 · 输入生辰八字 ✦</h3>
     <div class="bazi-form">
+      <div class="form-group">
+        <label>历法</label>
+        <select id="calendarType" onchange="toggleLunarOptions()">
+          <option value="solar">阳历</option>
+          <option value="lunar">阴历（农历）</option>
+        </select>
+      </div>
       <div class="form-group">
         <label>出生年份</label>
         <input type="number" id="birthYear" placeholder="如：1990" min="1900" max="2100" value="1990">
@@ -91,18 +100,38 @@
         <p class="result-title">📋 基本信息</p>
         <div class="info-grid" id="infoGrid"></div>
       </div>
+
+      <!-- 十神 -->
+      <div class="result-section">
+        <p class="result-title">⚔️ 十神</p>
+        <div class="shishen-grid" id="shishenGrid"></div>
+      </div>
+
+      <!-- 五行 -->
       <div class="result-section">
         <p class="result-title">☯ 五行分布</p>
         <div id="wuxingBar" style="display:flex;gap:0.5rem;flex-wrap:wrap;"></div>
       </div>
+
+      <!-- 大运 -->
       <div class="result-section">
         <p class="result-title">⚡ 大运</p>
         <div class="pillars-grid" id="daYunGrid" style="margin-top:1rem"></div>
       </div>
+
+      <!-- 神煞 -->
       <div class="result-section">
         <p class="result-title">🔮 神煞</p>
         <div class="shensha-list" id="shenshaGrid" style="grid-template-columns: repeat(auto-fill, minmax(200px,1fr));"></div>
       </div>
+
+      <!-- 运势详解 -->
+      <div class="result-section">
+        <p class="result-title">📈 运势详解</p>
+        <div class="fortune-grid" id="fortuneGrid"></div>
+      </div>
+
+      <!-- 命局分析 -->
       <div class="result-section">
         <p class="result-title">📊 命局分析</p>
         <div id="mingJu" style="font-size:0.9rem;color:var(--text-dim);line-height:2;"></div>
