@@ -2022,3 +2022,120 @@ function calcBazi() {
   result.calendarType = calendarType;
   renderBazi(result);
 }
+
+// ==================== 导出功能 ====================
+
+/**
+ * 生成八字排盘图片
+ */
+function exportBaziImage() {
+  const resultDiv = document.getElementById('baziResult');
+  if (!resultDiv) {
+    alert('请先生成排盘结果');
+    return;
+  }
+
+  // 隐藏导出按钮避免被截图
+  const exportBtns = document.querySelector('.export-buttons');
+  if (exportBtns) exportBtns.style.display = 'none';
+
+  html2canvas(resultDiv, {
+    backgroundColor: '#1a1a2e',
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    // 恢复导出按钮
+    if (exportBtns) exportBtns.style.display = 'flex';
+
+    // 下载图片
+    const link = document.createElement('a');
+    const year = document.getElementById('birthYear')?.value || '';
+    const month = document.getElementById('birthMonth')?.value || '';
+    const day = document.getElementById('birthDay')?.value || '';
+    link.download = `八字排盘_${year}${month}${day}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    if (exportBtns) exportBtns.style.display = 'flex';
+    alert('生成图片失败: ' + err.message);
+  });
+}
+
+/**
+ * 复制八字排盘文字到剪贴板
+ * @param {HTMLElement} [btn] 按钮元素
+ */
+function copyBaziText(btn) {
+  if (!btn) btn = event.target;
+  const year = document.getElementById('birthYear')?.value;
+  const month = document.getElementById('birthMonth')?.value;
+  const day = document.getElementById('birthDay')?.value;
+  const hourSelect = document.getElementById('birthHour');
+  const hour = hourSelect ? hourSelect.value : 0;
+
+  if (!year || !month || !day) {
+    alert('请先生成排盘结果');
+    return;
+  }
+
+  // 获取时柱
+  const hourNames = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+  const hourName = hourNames[hour] || '子';
+
+  // 构建文本
+  let text = `【八字排盘】${year}年${month}月${day}日 ${hourName}时\n`;
+
+  // 获取四柱数据
+  const pillarsGrid = document.getElementById('pillarsGrid');
+  if (pillarsGrid) {
+    const pillars = pillarsGrid.querySelectorAll('.pillar');
+    if (pillars.length >= 4) {
+      const yearPillar = pillars[0]?.querySelector('.pillar-stem')?.textContent || '';
+      const monthPillar = pillars[1]?.querySelector('.pillar-stem')?.textContent || '';
+      const dayPillar = pillars[2]?.querySelector('.pillar-stem')?.textContent || '';
+      const hourPillar = pillars[3]?.querySelector('.pillar-stem')?.textContent || '';
+
+      text += `年柱：${yearPillar}  月柱：${monthPillar}  日柱：${dayPillar}  时柱：${hourPillar}\n`;
+    }
+  }
+
+  // 获取五行分布
+  const wuxingBar = document.getElementById('wuxingBar');
+  if (wuxingBar) {
+    text += `五行：${wuxingBar.textContent.trim()}\n`;
+  }
+
+  // 获取大运信息
+  const daYunGrid = document.getElementById('daYunGrid');
+  if (daYunGrid) {
+    const yunInfo = daYunGrid.querySelector('.yun-info');
+    if (yunInfo) {
+      text += `\n${yunInfo.textContent}\n`;
+    }
+
+    // 当前大运
+    const currentItem = daYunGrid.querySelector('.daYun-item.current');
+    if (currentItem) {
+      const yearRange = currentItem.querySelector('.daYun-year')?.textContent || '';
+      const stem = currentItem.querySelector('.daYun-stem')?.textContent || '';
+      const branch = currentItem.querySelector('.daYun-branch')?.textContent || '';
+      text += `当前运程：${stem}${branch}（${yearRange}）\n`;
+    }
+  }
+
+  // 复制到剪贴板
+  navigator.clipboard.writeText(text).then(() => {
+    // 显示成功状态
+    const originalText = btn.textContent;
+    btn.textContent = '✓ 已复制';
+    btn.style.background = 'rgba(82,183,136,0.3)';
+
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+    }, 2000);
+  }).catch(err => {
+    alert('复制失败: ' + err.message);
+  });
+}

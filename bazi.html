@@ -136,6 +136,12 @@
         <p class="result-title">📊 命局分析</p>
         <div id="mingJu" style="font-size:0.9rem;color:var(--text-dim);line-height:2;"></div>
       </div>
+
+      <!-- 导出按钮 -->
+      <div class="export-buttons" style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(201,168,76,0.15);">
+        <button class="btn-calc" onclick="exportBaziImage()">🖼 生成图片</button>
+        <button class="btn-calc" onclick="copyBaziText(this)">📋 复制文字</button>
+      </div>
     </div>
   </div>
 
@@ -261,6 +267,7 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/bazi.js"></script>
 </body>
