@@ -16,15 +16,18 @@
  * @returns {Object} 命卦信息
  */
 function calcMingGua(year, gender) {
-  const lastDigit = year % 10;
+  // 玄空命卦公式（八宅派）- 经典公式
+  // 男: (100 - 年份%100) % 9，结果为0则寄坤卦(2)
+  // 女: (年份%100 + 6) % 9，结果为0则寄艮卦(8)
+  const lastTwo = year % 100;
   let guaNum;
 
   if (gender === 'm') {
-    guaNum = (100 - lastDigit) % 9;
-    if (guaNum === 0) guaNum = 5; // 5男寄坤
+    guaNum = ((100 - lastTwo) % 9 + 9) % 9;
+    if (guaNum === 0) guaNum = 2; // 5男寄坤
   } else {
-    guaNum = (lastDigit + 5) % 9;
-    if (guaNum === 0) guaNum = 5; // 5女寄艮
+    guaNum = ((lastTwo + 6) % 9 + 9) % 9;
+    if (guaNum === 0) guaNum = 8; // 5女寄艮
   }
 
   const guaInfo = {
